@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
 
 
 
@@ -9,35 +10,46 @@ const Button = ({text, updateCounter}) => {
     );
 };
 
+const Statistic = ({text, value}) => {
+    return (
+        <>
+            <td>{text}</td><td>{value}</td>
+        </>
+    );
+};
+
 const Statistics = ({good, neutral, bad}) => {
     let total = good + neutral + bad;
     let average = (good-bad) / total;
     let positive = (good/total) * 100;
 
-    let additionalStats;
+    let additionalStats, comment;
     if(total) {
         additionalStats = (
             <>
-                <p>All {total}</p>
-                <p>Average {average}</p>
-                <p>Positive {positive}</p>
+                <tr><Statistic text={"All"} value={total}></Statistic></tr>
+                <tr><Statistic text={"Average"} value={average}></Statistic></tr>
+                <tr><Statistic text={"Positive"} value={positive}></Statistic></tr>
             </>
         );
     }
     else {
-        additionalStats = (
+        comment = (
             <p>Press any of the buttons to interact</p>
         );
     }
     return (
-        <div>
-            <p>Statistics</p>
-            <p>Good {good}</p>
-            <p>Neutral {neutral}</p>
-            <p>Bad {bad}</p>
-            <br></br>
-            {additionalStats}
-        </div>
+        <>
+            <table>
+                <tbody>
+                    <tr><Statistic text={"Good"} value={good}></Statistic></tr>
+                    <tr><Statistic text={"Neutral"} value={neutral}></Statistic></tr>
+                    <tr><Statistic text={"Bad"} value={bad}></Statistic></tr>
+                    {additionalStats}
+                </tbody>
+            </table>
+            {comment}
+        </>
     );
 };
 
@@ -53,13 +65,12 @@ const App = () => {
 
   return (
     <div>
-      <p>Give Feedback</p>
-      <br></br>
-      <Button text={'Good'} updateCounter={updateBtnCounter(good, setGood)}></Button>
-      <Button text={'Neutral'} updateCounter={updateBtnCounter(neutral, setNeutral)}></Button>
-      <Button text={'Bad'} updateCounter={updateBtnCounter(bad, setBad)}></Button>
-      <br></br>
-      <Statistics good={good} neutral={neutral} bad={bad}></Statistics>
+        <p>Give Feedback</p>
+        <br></br>
+        <Button text={'Good'} updateCounter={updateBtnCounter(good, setGood)}></Button>
+        <Button text={'Neutral'} updateCounter={updateBtnCounter(neutral, setNeutral)}></Button>
+        <Button text={'Bad'} updateCounter={updateBtnCounter(bad, setBad)}></Button>
+        <Statistics good={good} neutral={neutral} bad={bad}></Statistics>
     </div>
   )
 }
