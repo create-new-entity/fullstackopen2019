@@ -24,7 +24,12 @@ const InputForm = ({inputSubmitHandler, inputChangedHandler, newName, setNewName
     );
 };
 
-const Contacts = ({persons}) => {
+const Contacts = ({persons, filterStr}) => {
+    if(filterStr){
+        persons = persons.filter((person) => {
+            return person.name.toLowerCase().startsWith(filterStr.toLowerCase());
+        });
+    }
     let contactComponents = persons.map((person, index) => {
         return <p key={index}>{person.name} {person.phone}</p>
     });
@@ -47,7 +52,6 @@ const App = () => {
   const [ newName, setNewName ] = useState('');
   const [ newPhone, setNewPhone ] = useState('');
   const [ filterStr, setFilterStr ] = useState('');
-  const [ filteredPersons, setFilteredPersons ] = useState(persons);
 
   const inputChangedHandler = (setNewNameOrPhoneFn) => {
       return (event) => {
@@ -64,19 +68,13 @@ const App = () => {
         return;
       }
       setPersons(persons.concat({name: newName, phone: newPhone}));
-      setFilteredPersons(persons.concat({name: newName, phone: newPhone}));
       setNewName('');
       setNewPhone('');
   };
 
   const filterHandler = (event) => {
       event.preventDefault();
-      let newFilteredPersons = persons.filter((person) => {
-        return person.name.toLowerCase().startsWith(event.target.value.toLowerCase());
-      });
-      
       setFilterStr(event.target.value);
-      setFilteredPersons(newFilteredPersons);
   };
 
 
@@ -87,7 +85,7 @@ const App = () => {
       <h2> add a new</h2>
       <InputForm inputSubmitHandler={inputSubmitHandler} inputChangedHandler={inputChangedHandler} newName={newName} setNewName={setNewName} newPhone={newPhone} setNewPhone={setNewPhone}></InputForm>
       <h2>Numbers</h2>
-      <Contacts persons={filteredPersons}></Contacts>
+      <Contacts persons={persons} filterStr={filterStr}></Contacts>
     </div>
   )
 }
