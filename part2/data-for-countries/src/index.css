@@ -16,3 +16,16 @@ img {
   width: 25%;
   border: 0.1rem solid;
 }
+
+.showHide {
+  display: inline-block;
+  padding: 0.5rem;
+}
+
+.weatherIcon {
+  width: 5%;
+}
+
+img, .weatherIcon {
+  margin-left: 1rem;
+}

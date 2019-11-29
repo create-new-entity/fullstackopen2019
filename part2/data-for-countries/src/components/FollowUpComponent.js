@@ -14,17 +14,26 @@ const FollowUpComponent = ({countries, searchStr}) => {
     }
 
     let filteredData = countries.filter((country) => {
-        return country.name.toLowerCase().startsWith(searchStr.toLowerCase());
+        return country.name.toLowerCase().includes(searchStr.toLowerCase());
     });
-
+    
     if(filteredData.length > 10){
         return (
             <Message message={"Too many matches. Specify another filter."}></Message>
         );
     }
     else if(filteredData.length > 1 && filteredData.length < 10){
+        let filteredCountries = filteredData.map((country) => {
+            return {
+                name: country.name,
+                capital: country.capital,
+                population: country.population,
+                languages: country.languages.map((language) => language.name),
+                flag: country.flag
+            };
+        });
         return (
-            <Countries countries={filteredData.map((country) => country.name)}></Countries>
+            <Countries countries={filteredCountries}></Countries>
         );
     }
     else if(filteredData.length === 1){

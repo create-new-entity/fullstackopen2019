@@ -1,3 +1,10 @@
+
+The project makes api requests to https://weatherstack.com/ to get weather info
+of capital city of selected countries.
+If the capital city name has some sort of special character, api fails to respond and
+thus for some countries the app may break.
+
+------------------------------------------------------------------------------------
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
