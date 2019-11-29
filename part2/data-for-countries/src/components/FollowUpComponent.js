@@ -6,26 +6,45 @@ import Countries from './Countries';
 import CountryWithData from './CountryWithData';
 
 
-const FollowUpComponent = ({everything}) => {
-    if(!everything) return null;
-    if(everything.hasOwnProperty('message')){
+const FollowUpComponent = ({countries, searchStr}) => {
+    if(searchStr.length < 1){
         return (
-            <Message message={everything.message}></Message>
+            <Message message={"Try typing a country name."}></Message>
         );
     }
-    else if(everything.hasOwnProperty('countries')){
+
+    let filteredData = countries.filter((country) => {
+        return country.name.toLowerCase().startsWith(searchStr.toLowerCase());
+    });
+
+    if(filteredData.length > 10){
         return (
-            <Countries countries={everything.countries}></Countries>
+            <Message message={"Too many matches. Specify another filter."}></Message>
         );
     }
-    else if(everything.hasOwnProperty('country')){
+    else if(filteredData.length > 1 && filteredData.length < 10){
         return (
-            <CountryWithData country={everything.country}></CountryWithData>
+            <Countries countries={filteredData.map((country) => country.name)}></Countries>
         );
     }
-    return (
-        <p>Jadu</p>
-    );
+    else if(filteredData.length === 1){
+        let country = {
+            name: filteredData[0].name,
+            capital: filteredData[0].capital,
+            population: filteredData[0].population,
+            languages: filteredData[0].languages.map((language) => language.name),
+            flag: filteredData[0].flag
+        };
+        return (
+            <CountryWithData country={country}></CountryWithData>
+        );
+    }
+    else{
+        return (
+            <>
+            </>
+        );
+    }
 };
 
 
