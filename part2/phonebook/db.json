@@ -1,0 +1,24 @@
+{
+  "persons": [
+    {
+      "name": "Lyudmila Pavlichenko",
+      "phone": "1234",
+      "id": 1
+    },
+    {
+      "name": "Grigori Rasputin",
+      "phone": "678",
+      "id": 2
+    },
+    {
+      "name": "Simo Hayha",
+      "phone": "789",
+      "id": 3
+    },
+    {
+      "name": "Ibn Batuta",
+      "phone": "345",
+      "id": 4
+    }
+  ]
+}

@@ -1,3 +1,15 @@
+
+##To run this app locally, run the followings:
+
+1. npm install
+2. npm start
+
+Make sure both ports 3000 (for react) and 3001 (for json-server) are available.
+
+
+--------------------------------------------------
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.contactDiv {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.contactDiv button {
+  margin-left: 0.5rem;
+  display: inline-block;
+}
+
+.contactDiv p {
+  padding: 0.1rem;
+  display: inline-block;
+}
