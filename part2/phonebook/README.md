@@ -1,5 +1,5 @@
 
-##To run this app locally, run the followings:
+## To run this app locally, run the followings:
 
 1. npm install
 2. npm start
