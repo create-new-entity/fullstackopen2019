@@ -12,10 +12,6 @@ code {
     monospace;
 }
 
-.contactDiv {
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
 
 .contactDiv button {
   margin-left: 0.5rem;
@@ -23,6 +19,29 @@ code {
 }
 
 .contactDiv p {
-  padding: 0.1rem;
   display: inline-block;
+}
+
+.positiveNotification {
+  color: green;
+  background: #F5F3D4;
+}
+
+.negativeNotification {
+  color: red;
+  background: #F5F3D4
+}
+
+.positiveNotification, .negativeNotification {
+  padding: 1rem;
+  border: 0.5rem solid;
+}
+
+
+h2 {
+  margin: 3rem 0 0.5rem 1rem;
+}
+
+.ownSection {
+  margin-left: 1rem;
 }
