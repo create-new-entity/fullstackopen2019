@@ -5,7 +5,7 @@ _____________________
 1. [Part 0: Fundamentals of Web apps](https://fullstackopen.com/en/part0)
 2. [Part 1: Introduction to React](https://fullstackopen.com/en/part1)
 3. [Part 2: Communicating with server](https://fullstackopen.com/en/part2)
-4. [Part 3: Programming a server with NodeJS and Express](https://fullstackopen.com/en/part3)
+4. [Part 3: Programming a server with NodeJS and Express](https://fullstackopen.com/en/part3) (Stuffs of this part are [here](https://github.com/imran-pavel/fullstackopen2019_part3))
 5. [Part 4: Testing Express servers, user administration](https://fullstackopen.com/en/part4)
 6. [Part 5: Testing React apps, custom hooks](https://fullstackopen.com/en/part5)
 7. [Part 6: State management with Redux](https://fullstackopen.com/en/part6)
