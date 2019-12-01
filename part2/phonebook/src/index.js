@@ -133,7 +133,7 @@ const App = () => {
                                 setNotification({show: false});
                             }, 2000);
                         })
-                        .catch((err) => {
+                        .catch((error) => {
                             setNotification({show: true, message: 'Entry had already been deleted.', result: 'negative'});
                             setTimeout(() => {
                                 setNotification({show: false});
@@ -146,7 +146,7 @@ const App = () => {
                                     setNewName('');
                                     setNewPhone('');
                                 })
-                                .catch((erro) => {
+                                .catch((error) => {
                                     console.log('Data fetching failed');
                                 });
                         });
