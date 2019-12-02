@@ -107,8 +107,6 @@ const App = () => {
             .catch((error) => {
                 console.log('Data fetching failed');
             });
-
-        
     };
 
     const filterHandler = (event) => {
