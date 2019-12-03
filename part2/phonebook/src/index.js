@@ -50,27 +50,35 @@ const App = () => {
             .getDBData()
             .then((persons) => {
                 let found = persons.findIndex((person) => person.name === newName);
+                console.log(persons);
                 if(found !== -1){
                     let choice = window.confirm(`Contact ${persons[found].name} already exists. Do you want to update?`);
                     if(choice){
                         let newObj = {
                             name: persons[found].name,
-                            phone: newPhone,
-                            id: getANonAssignedId(persons)
+                            phone: newPhone
                         }
                         backEndFns
                             .updateDBData(persons[found].id, newObj)
                             .then((newObj) => {
-                                let newPersons = [...persons];
-                                newPersons[found] = newObj;
-                                setPersons(newPersons);
-                                setNewName('');
-                                setNewPhone('');
+                                if(newObj.hasOwnProperty('error')){
+                                    setNotification({show: true, message: newObj.error, result: 'negative'});
+                                    setTimeout(() => {
+                                        setNotification({show: false});
+                                    }, 4000);
+                                }
+                                else{
+                                    let newPersons = [...persons];
+                                    newPersons[found] = newObj;
+                                    setPersons(newPersons);
+                                    setNewName('');
+                                    setNewPhone('');
+                                    setNotification({show: true, message: 'Successfully updated.', result: 'positive'});
+                                    setTimeout(() => {
+                                        setNotification({show: false});
+                                    }, 2000);
+                                }
                             });
-                        setNotification({show: true, message: 'Successfully updated.', result: 'positive'});
-                        setTimeout(() => {
-                            setNotification({show: false});
-                        }, 2000);
                     }
                     else {
                         backEndFns
@@ -94,13 +102,24 @@ const App = () => {
                     backEndFns
                         .createDBData(newObj)
                         .then((newObj) => {
-                            setPersons(persons.concat(newObj));
-                            setNewName('');
-                            setNewPhone('');
-                            setNotification({show: true, message: 'Entry successfully created.', result: 'positive'});
-                            setTimeout(() => {
-                                setNotification({show: false});
-                            }, 2000);
+                            if(newObj.hasOwnProperty('error')){
+                                setNotification({show: true, message: newObj.error, result: 'negative'});
+                                setTimeout(() => {
+                                    setNotification({show: false});
+                                }, 4000);
+                            }
+                            else{
+                                setPersons(persons.concat(newObj));
+                                setNewName('');
+                                setNewPhone('');
+                                setNotification({show: true, message: 'Entry successfully created.', result: 'positive'});
+                                setTimeout(() => {
+                                    setNotification({show: false});
+                                }, 2000);
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error.message);
                         });
                 }
             })
