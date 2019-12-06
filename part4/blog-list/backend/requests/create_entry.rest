@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "GTA 5",
+  "author": "Dan Houser",
+  "url": "https://en.wikipedia.org/wiki/Grand_Theft_Auto_V",
+  "likes": 5000000
+}
