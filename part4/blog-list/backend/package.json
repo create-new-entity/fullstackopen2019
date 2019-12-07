@@ -6,12 +6,13 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "jest": "^24.9.0",
     "nodemon": "^2.0.1"
   },
   "dependencies": {
@@ -19,6 +20,10 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "lodash": "^4.17.15",
     "mongoose": "^5.7.13"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
