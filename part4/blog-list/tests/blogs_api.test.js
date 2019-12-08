@@ -39,6 +39,39 @@ describe('\n\nTests related to POST requests', () => {
     });
 });
 
+describe('DELETE request tests', () => {
+    test('Delete with an id', async () => {
+        let response = await api.get('/api/blogs');
+        expect(response.body.length).toBeGreaterThan(0);
+
+        let targetId = response.body[0].id;
+
+        await api.delete(`/api/blogs/${targetId}`)
+                .expect(204);
+
+        await api.get(`/api/blogs/${targetId}`)
+                .expect(404);
+    });
+});
+
+describe('PUT request tests', () => {
+    test('Update likes of an entry by id', async () => {
+        let response = await api.get('/api/blogs');
+        expect(response.body.length).toBeGreaterThan(0);
+
+        let targetId = response.body[0].id;
+        let likesBeforeUpdate = response.body[0].likes;
+        
+        await api.put(`/api/blogs/${targetId}`)
+                .send({ likes: likesBeforeUpdate + 5 })
+                .expect(200);
+        
+        response = await api.get('/api/blogs');
+        let found = response.body.find((blog) => blog.id === targetId);
+        expect(found.likes - 5).toBe(likesBeforeUpdate);
+    });
+});
+
 describe('\n\nTests related to data properties', () => {
     test('Unique id property is defined as "id"', async () => {
         let response = await api.get('/api/blogs');
