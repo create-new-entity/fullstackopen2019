@@ -5,11 +5,6 @@ const user_helper = require('./../utils/user_helper');
 const jwt = require('jsonwebtoken');
 
 
-const getTokenFromRequest = (req) => {
-    return req.get('authorization').substring(7);
-};
-
-
 router.get('/', async (request, response) => {
     let blogs = await Blog.find({}).populate('user');
     response.json(blogs);
@@ -31,12 +26,11 @@ router.post('/', async (request, response, next) => {
         }
         if(!request.body.hasOwnProperty('likes')) request.body.likes = 0;
 
-        let token = getTokenFromRequest(request);
-        if(!token){
+        if(!request.token){
             response.status(401).json( { error: 'Invalid JWT Token' } );
             return;
         }
-        let decodedObj = jwt.verify(token, process.env.SECRET);
+        let decodedObj = jwt.verify(request.token, process.env.SECRET);
         if(!decodedObj){
             response.status(401).json( { error: 'Invalid JWT Token' } );
             return;

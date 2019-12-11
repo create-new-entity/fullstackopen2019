@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const router = require('./controllers/routes');
 const userRoutes = require('./controllers/userRoutes');
 const config = require('./utils/config');
-const errorMiddleware = require('./utils/errorMiddleware');
+const middlewares = require('./utils/middlewares');
 const loginRoutes = require('./controllers/loginRoutes');
 
 mongoose
@@ -22,10 +22,11 @@ mongoose
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(middlewares.markTokenFromRequest);
 app.use('/api/login', loginRoutes);
 app.use('/api/blogs', router);
 app.use('/api/users', userRoutes);
-app.use(errorMiddleware.unknownEndpoint);
-app.use(errorMiddleware.errorHandler);
+app.use(middlewares.unknownEndpoint);
+app.use(middlewares.errorHandler);
 
 module.exports = app;
