@@ -17,13 +17,23 @@ describe('\n\nUsers related tests', () => {
     test('Create a new user', async () => {
         let res = await api.get('/api/users');
         let allUsersBefore = res.body;
-        // console.log(allUsersBefore);
         res = await api.post('/api/users')
                             .send(user_helpers.dummyUser);
         res = await api.get('/api/users');
         let allUsersAfter = res.body;
 
         expect(allUsersAfter.length).toBe(allUsersBefore.length+1);
+    });
+
+    test('Invalid user not created', async () => {
+        let res = await api.get('/api/users');
+        let allUsersBefore = res.body;
+        res = await api.post('/api/users')
+                        .send(user_helpers.invalidUser)
+                        .expect(422);
+        res = await api.get('/api/users');
+        let allUsersAfter = res.body;
+        expect(allUsersAfter.length).toBe(allUsersBefore.length);
     });
 });
 

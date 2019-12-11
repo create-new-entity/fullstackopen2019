@@ -25,6 +25,11 @@ const dummyUser = {
     password: 'jellyBean_5398'
 };
 
+const invalidUser = {
+    name: 'Joe Pesci',
+    username: 'Wise_Guy_Who_Forgot_To_Put_Password'
+};
+
 
 const allUsersInDB = async () => {
     const users = await User.find({});
@@ -45,6 +50,7 @@ const inititalizeDBWithDummy_Users = async () => {
 
 module.exports = {
     dummyUser,
+    invalidUser,
     dummyUsers,
     allUsersInDB,
     inititalizeDBWithDummy_Users

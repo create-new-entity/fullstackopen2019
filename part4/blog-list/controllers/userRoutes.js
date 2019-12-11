@@ -17,6 +17,19 @@ router.post('/', async (req, res, next) => {
     try {
         let body = req.body;
 
+        if(!body.name || !body.password || !body.username){
+            let error = new Error('Name, Username or Password is missing');
+            error.name = 'MissingUserInput';
+            throw error;
+        }
+
+        if(body.password.length < 3){
+            let error = new Error('Password is too short');
+            error.name = 'TooShortInput';
+            throw error;
+        }
+        
+
         let saltRounds = 10;
         let passwordHash = await bcrypt.hash(body.password, saltRounds);
 
