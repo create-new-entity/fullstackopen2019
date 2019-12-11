@@ -9,6 +9,7 @@ const router = require('./controllers/routes');
 const userRoutes = require('./controllers/userRoutes');
 const config = require('./utils/config');
 const errorMiddleware = require('./utils/errorMiddleware');
+const loginRoutes = require('./controllers/loginRoutes');
 
 mongoose
   .connect(config.MONGO_URI, { useNewUrlParser: true })
@@ -21,6 +22,7 @@ mongoose
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/api/login', loginRoutes);
 app.use('/api/blogs', router);
 app.use('/api/users', userRoutes);
 app.use(errorMiddleware.unknownEndpoint);
