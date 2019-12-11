@@ -5,9 +5,12 @@ const unknownEndpoint = (request, response) => {
 }
   
 const errorHandler = (error, request, response, next) => {
-    console.log(error.message);
+    console.log(error.name);
 
-    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    if(error.name === 'JsonWebTokenError'){
+        return response.status(401).json({error: 'Invalid JWT Token'});
+    }
+    else if (error.name === 'CastError' && error.kind === 'ObjectId') {
         return response.status(400).send({ error: 'malformatted id' });
     }
     else if (error.name === 'ValidationError' || error.name === 'TooShortInput') {

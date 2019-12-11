@@ -1,11 +1,13 @@
 const app = require('./../app');
 const mongoose = require('mongoose');
 const test_helpers = require('./../utils/test_helpers');
+const user_helpers = require('./../utils/user_helper');
 const supertest = require('supertest');
 const api = supertest(app);
 
 beforeEach(async () => {
     await test_helpers.initializeDBWithDummyData();
+    await user_helpers.inititalizeDBWithDummy_Users();
 });
 
 describe('\n\nTests related to GET requests', () => {
@@ -16,17 +18,48 @@ describe('\n\nTests related to GET requests', () => {
 });
 
 describe('\n\nTests related to POST requests', () => {
-    test('POST request successfully stores one additional data', async () => {
+
+    test('POST request fails for invalid token', async () => {
+        await api.post('/api/login')
+            .send({
+                username: user_helpers.dummyUsers[0].username,
+                password: user_helpers.dummyUsers[0].password
+            })
+            .expect(200);
+        // console.log('loginResponseBody', loginResponse.body);
         await api.post('/api/blogs')
-            .send(test_helpers.newDummy);
+            .set('Authorization', 'Bearer ' + 'this_is_an_invalid_token')
+            .send(test_helpers.newDummy)
+            .expect(401);
+    });
+
+    test('POST request successfully stores one additional data', async () => {
+        let loginResponse = await api.post('/api/login')
+            .send({
+                username: user_helpers.dummyUsers[0].username,
+                password: user_helpers.dummyUsers[0].password
+            })
+            .expect(200);
+        await api.post('/api/blogs')
+            .send(test_helpers.newDummy)
+            .set('Authorization', 'Bearer ' + loginResponse.body.token)
+            .expect(201);
         let response = await api.get('/api/blogs');
         expect(response.body.length).toBe(test_helpers.dummyData.length+1);
     });
 
     test('"likes" property is set to 0 if it is missing in POST request data', async () => {
         expect(test_helpers.dummyWithoutLike.likes).not.toBeDefined();
+        let loginResponse = await api.post('/api/login')
+                                    .send({
+                                        username: user_helpers.dummyUsers[0].username,
+                                        password: user_helpers.dummyUsers[0].password
+                                    })
+                                    .expect(200);
         await api.post('/api/blogs')
-            .send(test_helpers.dummyWithoutLike);
+            .send(test_helpers.dummyWithoutLike)
+            .set('Authorization', 'Bearer ' + loginResponse.body.token)
+            .expect(201);
         let response = await api.get('/api/blogs');
         let result = response.body.find((blog) => blog.title === 'Yahoo');
         expect(result.likes).toBe(0);

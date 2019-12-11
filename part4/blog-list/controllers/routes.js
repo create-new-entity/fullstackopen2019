@@ -2,6 +2,13 @@ const router = require('express').Router();
 const Blog = require('./../models/blog');
 const User = require('./../models/user');
 const user_helper = require('./../utils/user_helper');
+const jwt = require('jsonwebtoken');
+
+
+const getTokenFromRequest = (req) => {
+    return req.get('authorization').substring(7);
+};
+
 
 router.get('/', async (request, response) => {
     let blogs = await Blog.find({}).populate('user');
@@ -18,23 +25,37 @@ router.get('/:id', async (request, response) => {
   
 router.post('/', async (request, response, next) => {
     try {
-        const blog = new Blog(request.body);
-        if(!blog.title || !blog.url){
+        if(!request.body.title || !request.body.url){
             response.status(400).end();
             return;
         }
-        if(!blog.hasOwnProperty('likes')) blog.likes = 0;
-        let allUsers = await user_helper.allUsersInDB();
-        let randomNthUser = Math.floor(Math.random() * Math.floor(allUsers.length));
-        blog.user = allUsers[randomNthUser].id;
-        let result = await blog.save();
+        if(!request.body.hasOwnProperty('likes')) request.body.likes = 0;
 
-        let user = await User.findById(allUsers[randomNthUser].id);
+        let token = getTokenFromRequest(request);
+        if(!token){
+            response.status(401).json( { error: 'Invalid JWT Token' } );
+            return;
+        }
+        let decodedObj = jwt.verify(token, process.env.SECRET);
+        if(!decodedObj){
+            response.status(401).json( { error: 'Invalid JWT Token' } );
+            return;
+        }
 
-        user.blogs = user.blogs.concat(result.toJSON().id);
+        let user = await User.findOne( { username: decodedObj.username } );
+        let newBlog = await new Blog({
+            title: request.body.title,
+            author: request.body.author,
+            url: request.body.url,
+            likes: request.body.likes,
+            user: user.id
+        }).save();
+        
+        user.blogs = user.blogs.concat(newBlog.toJSON().id);
         await user.save();
         
-        response.status(201).json(result);
+        
+        response.status(201).json(newBlog.toJSON());
     }
     catch(error) {
         next(error);
