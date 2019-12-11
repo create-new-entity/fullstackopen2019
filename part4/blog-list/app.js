@@ -6,6 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 const router = require('./controllers/routes');
+const userRoutes = require('./controllers/userRoutes');
 const config = require('./utils/config');
 const errorMiddleware = require('./utils/errorMiddleware');
 
@@ -21,6 +22,7 @@ mongoose
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/blogs', router);
+app.use('/api/users', userRoutes);
 app.use(errorMiddleware.unknownEndpoint);
 app.use(errorMiddleware.errorHandler);
 
