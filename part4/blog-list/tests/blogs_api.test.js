@@ -73,17 +73,67 @@ describe('\n\nTests related to POST requests', () => {
 });
 
 describe('DELETE request tests', () => {
-    test('Delete with an id', async () => {
-        let response = await api.get('/api/blogs');
-        expect(response.body.length).toBeGreaterThan(0);
+    test('Delete a blog with valid token', async () => {
+        let loginResponse = await api.post('/api/login')
+            .send({
+                username: user_helpers.dummyUsers[0].username,
+                password: user_helpers.dummyUsers[0].password
+            })
+            .expect(200);
+        let createdBlog = await api.post('/api/blogs')
+            .send(test_helpers.newDummy)
+            .set('Authorization', 'Bearer ' + loginResponse.body.token)
+            .expect(201);
 
-        let targetId = response.body[0].id;
+        await api.delete(`/api/blogs/${createdBlog.body.id}`)
+            .set('Authorization', 'Bearer ' + loginResponse.body.token)
+            .expect(204);
+        let currentBlogs = await api.get('/api/blogs').expect(200);
+        expect(currentBlogs.body.length).toBe(test_helpers.dummyData.length);
+    });
 
-        await api.delete(`/api/blogs/${targetId}`)
-                .expect(204);
+    test('Delete fails with invalid token', async () => {
+        let loginResponse = await api.post('/api/login')
+            .send({
+                username: user_helpers.dummyUsers[0].username,
+                password: user_helpers.dummyUsers[0].password
+            })
+            .expect(200);
+        let createdBlog = await api.post('/api/blogs')
+            .send(test_helpers.newDummy)
+            .set('Authorization', 'Bearer ' + loginResponse.body.token)
+            .expect(201);
+        await api.delete(`/api/blogs/${createdBlog.body.id}`)
+            .set('Authorization', 'Bearer ' + 'invalid_token_slkdfjlskdjf')
+            .expect(401);
+        let currentBlogs = await api.get('/api/blogs').expect(200);
+        expect(currentBlogs.body.length).toBe(test_helpers.dummyData.length+1);
+    });
 
-        await api.get(`/api/blogs/${targetId}`)
-                .expect(404);
+    test('Delete fails when unauthorized user tries to delete', async () => {
+        let loginResponse = await api.post('/api/login')
+            .send({
+                username: user_helpers.dummyUsers[0].username,
+                password: user_helpers.dummyUsers[0].password
+            })
+            .expect(200);
+        let createdBlog = await api.post('/api/blogs')
+            .send(test_helpers.newDummy)
+            .set('Authorization', 'Bearer ' + loginResponse.body.token)
+            .expect(201);
+
+        let someOtherUserLoginResponse = await api.post('/api/login')
+            .send({
+                username: user_helpers.dummyUsers[1].username,
+                password: user_helpers.dummyUsers[1].password
+            })
+            .expect(200);
+        let errorResponse = await api.delete(`/api/blogs/${createdBlog.body.id}`)
+            .set('Authorization', 'Bearer ' + someOtherUserLoginResponse.body.token)
+            .expect(401);
+        expect(errorResponse.body.error).toBe('User Unauthorized');
+        let currentBlogs = await api.get('/api/blogs').expect(200);
+        expect(currentBlogs.body.length).toBe(test_helpers.dummyData.length+1);
     });
 });
 

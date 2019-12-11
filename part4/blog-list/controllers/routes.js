@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 router.get('/', async (request, response) => {
     let blogs = await Blog.find({}).populate('user');
-    response.json(blogs);
+    response.status(200).json(blogs);
 });
 
 router.get('/:id', async (request, response) => {
@@ -64,15 +64,38 @@ router.put('/:id', async (request, response) => {
     else response.status(400).end();
 });
 
-router.delete('/:id', async (request, response) => {
+router.delete('/:id', async (request, response, next) => {
     try {
-        let removedBlog = await Blog.findByIdAndRemove(request.params.id);
-        if(removedBlog){
+        if(!request.token){
+            response.status(401).json( { error: 'Invalid JWT Token' } );
+            return;
+        }
+        let decodedObj = jwt.verify(request.token, process.env.SECRET);
+        if(!decodedObj){
+            response.status(401).json( { error: 'Invalid JWT Token' } );
+            return;
+        }
+        let user = await User.findOne( { username: decodedObj.username } );
+        let blog = await Blog.findOne( { _id: request.params.id });
+        if(!blog){
+            response.status(404).json( { error: 'Resource not found'} );
+        }
+        if(blog.toJSON().user.toString() === user.toJSON().id.toString()){
+            await Blog.deleteOne({ _id: blog._id });
+            let blogs = [...user.blogs];
+            let foundIndex = blogs.findIndex((currBlog) => {
+                return currBlog.id === blog.toJSON().id;
+            });
+            blogs.splice(foundIndex, 1);
+            user.blogs = blogs;
+            await user.save();
             response.status(204).end();
         }
-        else response.end();
+        else {
+            response.status(401).json({ error: 'User Unauthorized' });
+        }
     }
-    catch(error){
+    catch (error) {
         next(error);
     }
 });
