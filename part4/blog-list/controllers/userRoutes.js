@@ -5,7 +5,7 @@ const user_helpers = require('../utils/user_helper');
 
 router.get('/', async (req, res, next) => {
     try {
-        let allUsers = await user_helpers.allUsersInDB();
+        let allUsers = await User.find({}).populate('blogs');
         res.json(allUsers);
     }
     catch (error) {
