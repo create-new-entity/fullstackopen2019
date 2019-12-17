@@ -1,12 +1,21 @@
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
-const user_helpers = require('../utils/user_helper');
 
 router.get('/', async (req, res, next) => {
     try {
         let allUsers = await User.find({}).populate('blogs');
         res.json(allUsers);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+router.get('/:id', async (req, res, next) => {
+    try {
+        let user = await User.findById(req.params.id).populate('blogs');
+        res.json(user);
     }
     catch (error) {
         next(error);

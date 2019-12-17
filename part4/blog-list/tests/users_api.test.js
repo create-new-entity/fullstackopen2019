@@ -35,6 +35,14 @@ describe('\n\nUsers related tests', () => {
         let allUsersAfter = res.body;
         expect(allUsersAfter.length).toBe(allUsersBefore.length);
     });
+
+    test('Get all details of one user', async () => {
+        let res = await api.get('/api/users');
+        let allUsers = res.body;
+        let firstUserId = allUsers[0].id;
+        res = await api.get('/api/users/' + firstUserId);
+        expect(res.body.id).toBe(firstUserId);
+    });
 });
 
 afterAll(async () => {

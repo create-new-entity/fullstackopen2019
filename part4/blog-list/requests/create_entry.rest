@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNfX0xNMTAiLCJpZCI6IjVkZjEwMTk3ZDg3OTg5M2JiYzllY2ZlZiIsImlhdCI6MTU3NjA4MTM5M30.2u1ZRsojj08Cg2jDrO_hbuol_j4S13IRLtof1TqzHD4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNfX0xNMTAiLCJpZCI6IjVkZjEwMTk3ZDg3OTg5M2JiYzllY2ZlZiIsImlhdCI6MTU3NjU5MjY1Nn0.SGGv-MGkgiQI1PSweRRqK4_rPniGW0tOGXkTHd4bvSQ
 
 {
-  "title": "Harry Potter and the prisoner of Azkaban",
-  "author": "J.K. Rowling",
-  "url": "https://en.wikipedia.org/wiki/Harry_Potter_and_the_Prisoner_of_Azkaban",
-  "likes": 500034000
+  "title": "Digital Fortress",
+  "author": "Dan Brown",
+  "url": "https://en.wikipedia.org/wiki/Digital_Fortress",
+  "likes": 5000
 }
