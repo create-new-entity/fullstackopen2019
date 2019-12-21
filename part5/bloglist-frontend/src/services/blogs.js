@@ -28,10 +28,22 @@ const getOneUserDetails = async (id) => {
   return response.data;
 }
 
+const createNewEntry = async (payload) => {
+  let config = {
+    headers : {
+      Authorization: token
+    }
+  };
+
+  let response = await axios.post(baseUrl, payload, config);
+  return response.data;
+};
+
 export default {
   getAll,
   login,
   setToken,
   getToken,
-  getOneUserDetails
+  getOneUserDetails,
+  createNewEntry
 }

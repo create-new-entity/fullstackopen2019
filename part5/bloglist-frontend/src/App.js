@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import backEndFns from './services/blogs';
 import Blog from './components/Blog';
+import CreateNewBlog from './components/CreateNewBlog';
 import _ from 'lodash';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
   const [userDetail, setUserDetail] = useState({});
+  const [createNew, setCreateNew] = useState({ title: '', author: '', url: ''});
 
   useEffect(() => {
     let storedUser = JSON.parse(window.localStorage.getItem('user'));
@@ -74,6 +76,23 @@ function App() {
     setUserDetail({});
   }
 
+  const createHandler = async (event) => {
+    try {
+      event.preventDefault();
+      let newObj = { ...createNew, title: '', author: '', url: ''};
+      let hold = { ...createNew };
+      setCreateNew(newObj);
+      let newBlog = await backEndFns.createNewEntry(hold);
+      let newUserDetail = { ...userDetail };
+      newUserDetail.blogs.push(newBlog);
+      setUserDetail(newUserDetail);
+      window.localStorage.setItem('userDetail', JSON.stringify(userDetail));
+    }
+    catch(error){
+      console.log(error);
+    }
+  };
+
   const detailsPage = () => {
     let blogs = null;
     if(!_.isEmpty(userDetail)){
@@ -86,9 +105,26 @@ function App() {
       <>
         <h1> {user.username} Logged In!!!</h1>
         <button onClick={logoutHandler}>Logout</button>
+        <CreateNewBlog createNewInputsChangeHandler={createNewInputsChangeHandler} createNew={createNew} createHandler={createHandler}/>
         {blogs}
       </>
     );
+  };
+
+  const createNewInputsChangeHandler = (type) => {
+    if(type === 'title') return (event) => {
+      let newObj = { ...createNew, title: event.target.value };
+      setCreateNew(newObj);
+    };
+    else if(type === 'author') return (event) => {
+      let newObj = { ...createNew, author: event.target.value };
+      setCreateNew(newObj);
+    };
+    else if(type === 'url') return (event) => {
+      let newObj = { ...createNew, url: event.target.value };
+      setCreateNew(newObj);
+    };
+    else console.log('Something went wrong');
   };
 
   return (
