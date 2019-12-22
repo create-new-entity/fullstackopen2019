@@ -13,3 +13,7 @@
 .negative-notification {
     color: red;
 }
+
+button {
+    border-radius: 5px;
+}

@@ -3,6 +3,7 @@ import backEndFns from './services/blogs';
 import Blog from './components/Blog';
 import CreateNewBlog from './components/CreateNewBlog';
 import Notification from './components/Notification';
+import Toggle from './components/Toggle';
 import _ from 'lodash';
 
 const notificationTimeLength = 700;
@@ -92,9 +93,12 @@ function App() {
     setUserDetail({});
   }
 
+  let createBlogRef = React.createRef();
+
   const createHandler = async (event) => {
     try {
       event.preventDefault();
+      createBlogRef.current.toggle();
       let newObj = { ...createNew, title: '', author: '', url: ''};
       let hold = { ...createNew };
       setCreateNew(newObj);
@@ -120,15 +124,15 @@ function App() {
     }
 
     let notificationComponent = null;
-
     if(notification.message !== '') notificationComponent = (<Notification message={notification.message} type={notification.type}></Notification>);
 
+    
     return (
       <>
         {notificationComponent}
         <h1>Logged in user: {user.username}</h1>
         <button onClick={logoutHandler}>Logout</button>
-        <CreateNewBlog createNewInputsChangeHandler={createNewInputsChangeHandler} createNew={createNew} createHandler={createHandler}/>
+        <Toggle buttonLabel="New" ref={createBlogRef}><CreateNewBlog createNewInputsChangeHandler={createNewInputsChangeHandler} createNew={createNew} createHandler={createHandler}/></Toggle>
         {blogs}
       </>
     );
