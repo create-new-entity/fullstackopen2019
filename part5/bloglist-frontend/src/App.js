@@ -12,17 +12,17 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
-  const [userDetail, setUserDetail] = useState({});
+  const [blogs, setBlogs] = useState([]);
   const [createNew, setCreateNew] = useState({ title: '', author: '', url: ''});
   const [notification, setNotification] = useState({message:''});
 
   useEffect(() => {
     let storedUser = JSON.parse(window.localStorage.getItem('user'));
-    let storedUserDetail = JSON.parse(window.localStorage.getItem('userDetail'));
+    let storedBlogs = JSON.parse(window.localStorage.getItem('blogs'));
     if(!_.isEmpty(storedUser)){
       backEndFns.setToken(storedUser.token);
       setUser(storedUser);
-      setUserDetail(storedUserDetail);
+      setBlogs(storedBlogs);
     }
   }, []);
 
@@ -41,10 +41,9 @@ function App() {
           password: password
         }
       );
-      let newUserDetail = await backEndFns.getOneUserDetails(newUser.id);
-      
+      let allBlogs = await backEndFns.getAll();
       window.localStorage.setItem('user', JSON.stringify(newUser));
-      window.localStorage.setItem('userDetail', JSON.stringify(newUserDetail));
+      window.localStorage.setItem('blogs', JSON.stringify(allBlogs));
 
       backEndFns.setToken(newUser.token);
 
@@ -52,7 +51,7 @@ function App() {
       setPassword('');
 
       setUser(newUser);
-      setUserDetail(newUserDetail);
+      setBlogs(allBlogs);
       
       showNotification({ message: 'Logged in successfully', type: 'positive' });
     }
@@ -90,7 +89,7 @@ function App() {
     window.localStorage.removeItem('user');
     window.localStorage.removeItem('userDetail');
     setUser({});
-    setUserDetail({});
+    setBlogs([]);
   }
 
   let createBlogRef = React.createRef();
@@ -99,15 +98,15 @@ function App() {
     try {
       event.preventDefault();
       createBlogRef.current.toggle();
-      let newObj = { ...createNew, title: '', author: '', url: ''};
       let hold = { ...createNew };
+      let newObj = { ...createNew, title: '', author: '', url: ''};
       setCreateNew(newObj);
       let newBlog = await backEndFns.createNewEntry(hold);
-      let newUserDetail = { ...userDetail };
-      newUserDetail.blogs.push(newBlog);
-      setUserDetail(newUserDetail);
+      let newAllBlogs = [...blogs];
+      newAllBlogs.push(newBlog);
+      setBlogs(newAllBlogs);
       showNotification({ message: `Added new blog entry: ${newBlog.title}`, type: 'positive' });
-      window.localStorage.setItem('userDetail', JSON.stringify(userDetail));
+      window.localStorage.setItem('blogs', JSON.stringify(newAllBlogs));
     }
     catch(error){
       console.log(error);
@@ -116,9 +115,9 @@ function App() {
   };
 
   const detailsPage = () => {
-    let blogs = null;
-    if(!_.isEmpty(userDetail)){
-      blogs = userDetail.blogs.map((blog, index) => {
+    let allBlogs = null;
+    if(blogs.length){
+      allBlogs = blogs.map((blog, index) => {
         return <Blog key={index} blog={blog}/>
       });
     }
@@ -133,7 +132,7 @@ function App() {
         <h1>Logged in user: {user.username}</h1>
         <button onClick={logoutHandler}>Logout</button>
         <Toggle buttonLabel="New" ref={createBlogRef}><CreateNewBlog createNewInputsChangeHandler={createNewInputsChangeHandler} createNew={createNew} createHandler={createHandler}/></Toggle>
-        {blogs}
+        {allBlogs}
       </>
     );
   };
