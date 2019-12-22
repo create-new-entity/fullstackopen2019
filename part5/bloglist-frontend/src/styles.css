@@ -1,4 +1,4 @@
-.notification {
+.notification, .blog {
     border-style: solid;
     border-radius: 10px;
     background-color: #FFFDE4;
@@ -12,6 +12,11 @@
 
 .negative-notification {
     color: red;
+}
+
+.blog {
+    border-color: black;
+    margin: 1rem 0.5rem;
 }
 
 button {
