@@ -1,0 +1,15 @@
+.notification {
+    border-style: solid;
+    border-radius: 10px;
+    background-color: #FFFDE4;
+    padding: 15px;
+    margin-bottom: 1rem;
+}
+
+.positive-notification {
+    color: green;
+}
+
+.negative-notification {
+    color: red;
+}

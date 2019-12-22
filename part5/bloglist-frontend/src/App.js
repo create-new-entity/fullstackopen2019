@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import backEndFns from './services/blogs';
 import Blog from './components/Blog';
 import CreateNewBlog from './components/CreateNewBlog';
+import Notification from './components/Notification';
 import _ from 'lodash';
+
+const notificationTimeLength = 700;
 
 function App() {
   const [username, setUsername] = useState('');
@@ -10,6 +13,7 @@ function App() {
   const [user, setUser] = useState({});
   const [userDetail, setUserDetail] = useState({});
   const [createNew, setCreateNew] = useState({ title: '', author: '', url: ''});
+  const [notification, setNotification] = useState({message:''});
 
   useEffect(() => {
     let storedUser = JSON.parse(window.localStorage.getItem('user'));
@@ -20,6 +24,11 @@ function App() {
       setUserDetail(storedUserDetail);
     }
   }, []);
+
+  const showNotification = (newNotification) => {
+    setNotification(newNotification);
+    setTimeout(() => setNotification({message: ''}), notificationTimeLength);
+  };
 
   const logInHandler = async (event) => {
     try {
@@ -43,15 +52,22 @@ function App() {
 
       setUser(newUser);
       setUserDetail(newUserDetail);
+      
+      showNotification({ message: 'Logged in successfully', type: 'positive' });
     }
     catch (error){
       console.log(error);
+      showNotification({ message: 'Log in failed', type: 'negative' });
     }
   };
   
   const loginForm = () => {
+    let notificationComponent = null;
+    if(notification.message !== '') notificationComponent = (<Notification message={notification.message} type={notification.type}></Notification>);
+
     return (
       <>
+        {notificationComponent}
         <form onSubmit={logInHandler}>
           <div>
             <label>Username:</label>
@@ -86,10 +102,12 @@ function App() {
       let newUserDetail = { ...userDetail };
       newUserDetail.blogs.push(newBlog);
       setUserDetail(newUserDetail);
+      showNotification({ message: `Added new blog entry: ${newBlog.title}`, type: 'positive' });
       window.localStorage.setItem('userDetail', JSON.stringify(userDetail));
     }
     catch(error){
       console.log(error);
+      showNotification({ message: 'Missing Title or URL', type: 'negative' });
     }
   };
 
@@ -100,10 +118,15 @@ function App() {
         return <Blog key={index} blog={blog}/>
       });
     }
-      
+
+    let notificationComponent = null;
+
+    if(notification.message !== '') notificationComponent = (<Notification message={notification.message} type={notification.type}></Notification>);
+
     return (
       <>
-        <h1> {user.username} Logged In!!!</h1>
+        {notificationComponent}
+        <h1>Logged in user: {user.username}</h1>
         <button onClick={logoutHandler}>Logout</button>
         <CreateNewBlog createNewInputsChangeHandler={createNewInputsChangeHandler} createNew={createNew} createHandler={createHandler}/>
         {blogs}
