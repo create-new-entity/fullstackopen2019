@@ -51,7 +51,9 @@ function App() {
       setPassword('');
 
       setUser(newUser);
-      setBlogs(allBlogs);
+      setBlogs(_.orderBy(allBlogs, [(blog) => {
+        return blog.likes;
+      }], ['desc']));
       
       showNotification({ message: 'Logged in successfully', type: 'positive' });
     }
@@ -102,7 +104,9 @@ function App() {
         return blog.id === res.id;
       });
       newBlogs[foundIndex].likes++;
-      setBlogs(newBlogs);
+      setBlogs(_.orderBy(newBlogs, [(blog) => {
+        return blog.likes;
+      }], ['desc']));
     };
   };
 
@@ -116,7 +120,9 @@ function App() {
       let newBlog = await backEndFns.createNewEntry(hold);
       let newAllBlogs = [...blogs];
       newAllBlogs.push(newBlog);
-      setBlogs(newAllBlogs);
+      setBlogs(_.orderBy(newAllBlogs, [(blog) => {
+        return blog.likes;
+      }], ['desc']));
       showNotification({ message: `Added new blog entry: ${newBlog.title}`, type: 'positive' });
       window.localStorage.setItem('blogs', JSON.stringify(newAllBlogs));
     }
