@@ -57,7 +57,7 @@ router.post('/', async (request, response, next) => {
 });
 
 router.put('/:id', async (request, response) => {
-    let updatedObj = await Blog.findOneAndUpdate({ _id: request.params.id }, { $set: { likes: request.body.likes } }, { new: true });
+    let updatedObj = await Blog.findOneAndUpdate({ _id: request.params.id }, { $inc: { likes: 1 } }, { new: true });
     if(updatedObj){
         response.status(200).json(updatedObj);
     }

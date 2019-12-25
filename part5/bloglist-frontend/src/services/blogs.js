@@ -39,11 +39,17 @@ const createNewEntry = async (payload) => {
   return response.data;
 };
 
+const incrementLike = async (id) => {
+  let response = await axios.put(`${baseUrl}/${id}`);
+  return response.data;
+}
+
 export default {
   getAll,
   login,
   setToken,
   getToken,
   getOneUserDetails,
+  incrementLike,
   createNewEntry
 }

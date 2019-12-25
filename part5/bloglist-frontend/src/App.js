@@ -94,6 +94,18 @@ function App() {
 
   let createBlogRef = React.createRef();
 
+  const likeHandler = (id) => {
+    return async () => {
+      let res = await backEndFns.incrementLike(id);
+      let newBlogs = [...blogs];
+      let foundIndex = _.findIndex(newBlogs, (blog) => {
+        return blog.id === res.id;
+      });
+      newBlogs[foundIndex].likes++;
+      setBlogs(newBlogs);
+    };
+  };
+
   const createHandler = async (event) => {
     try {
       event.preventDefault();
@@ -118,7 +130,7 @@ function App() {
     let allBlogs = null;
     if(blogs.length){
       allBlogs = blogs.map((blog, index) => {
-        return <Blog key={index} blog={blog}/>
+        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)}/>
       });
     }
 

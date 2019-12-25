@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeHandler }) => {
   let showOrHide = { display: 'none'};
   const [visible, setVisible] = useState(false);
   const toggle = () => {
@@ -14,11 +14,11 @@ const Blog = ({ blog }) => {
   
   visible ? showOrHide = { display: ''} : showOrHide = {display: 'none'};
   return (
-    <div className="blog" onClick={toggle}>
-      <div>{blog.title}</div>
+    <div className="blog">
+      <div onClick={toggle}>{blog.title}</div>
       <div style={showOrHide}>
           <a href={blog.url}>{blog.url}</a>
-          <p>{blog.likes} like(s)</p><button>Like</button>
+          <p>{blog.likes} like(s)</p><button onClick={likeHandler}>Like</button>
           <p>Creator: {blog.author}</p>
           {author}
       </div>
