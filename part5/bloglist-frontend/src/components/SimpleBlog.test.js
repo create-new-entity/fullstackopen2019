@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import SimpleBlog from './SimpleBlog';
 
 describe('Testing SimpleBlog Component', () => {
@@ -31,6 +31,13 @@ describe('Testing SimpleBlog Component', () => {
   test('Likes are rendered', () => {
     const likeDiv = component.container.querySelector('.likes');
     expect(likeDiv).toHaveTextContent(testBlog.likes);
+  });
+
+  test('Like button press test', () => {
+    const likeButton = component.getByText('like');
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
+    expect(mockHandler.mock.calls.length).toBe(2);
   });
 });
 
