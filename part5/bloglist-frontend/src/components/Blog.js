@@ -21,11 +21,10 @@ const Blog = ({ blog, likeHandler, deleteHandler, renderDelete }) => {
   visible ? showOrHide = { display: '' } : showOrHide = { display: 'none' };
   return (
     <div className="blog">
-      <div onClick={toggle}>{blog.title}</div>
-      <div style={showOrHide}>
+      <div className='title-author' onClick={toggle}>{blog.title} {blog.author}</div>
+      <div className='url-like'style={showOrHide}>
         <a href={blog.url}>{blog.url}</a>
         <p>{blog.likes} like(s)</p><button onClick={likeHandler}>Like</button>
-        <p>Creator: {blog.author}</p>
         {author}
         {deleteButton}
       </div>
