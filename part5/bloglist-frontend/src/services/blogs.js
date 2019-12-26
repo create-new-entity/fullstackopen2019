@@ -44,6 +44,17 @@ const incrementLike = async (id) => {
   return response.data;
 }
 
+const deleteBlog = async (id) => {
+  let config = {
+    headers : {
+      Authorization: token
+    }
+  };
+  let response = await axios.delete(`${baseUrl}/${id}`, config);
+  console.log('response.status', response.status);
+  return response.status;
+};
+
 export default {
   getAll,
   login,
@@ -51,5 +62,6 @@ export default {
   getToken,
   getOneUserDetails,
   incrementLike,
-  createNewEntry
+  createNewEntry,
+  deleteBlog
 }

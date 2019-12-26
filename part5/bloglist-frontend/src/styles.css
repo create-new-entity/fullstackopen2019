@@ -20,5 +20,6 @@
 }
 
 button {
-    border-radius: 5px;
+    color: white;
+    background-color: #FE5C00;
 }

@@ -110,6 +110,19 @@ function App() {
     };
   };
 
+  const deleteHandler = (id) => {
+    return async () => {
+      let blogTitle = blogs.find((blog) => blog.id === id).title;
+      let reply = window.confirm(`Delete ${blogTitle}?`);
+      if(!reply) return;
+      let statusCode = await backEndFns.deleteBlog(id);
+      if(statusCode === 204){
+        let newBlogs = [...blogs];
+        setBlogs(_.orderBy(newBlogs.filter((blog) => blog.id !== id), [(blog) => blog.likes], ['desc']));
+      }
+    }
+  };
+
   const createHandler = async (event) => {
     try {
       event.preventDefault();
@@ -136,7 +149,7 @@ function App() {
     let allBlogs = null;
     if(blogs.length){
       allBlogs = blogs.map((blog, index) => {
-        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)}/>
+        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={user.id === blog.user.id}/>
       });
     }
 
