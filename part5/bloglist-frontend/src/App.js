@@ -13,8 +13,8 @@ function App() {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
   const [blogs, setBlogs] = useState([]);
-  const [createNew, setCreateNew] = useState({ title: '', author: '', url: ''});
-  const [notification, setNotification] = useState({message:''});
+  const [createNew, setCreateNew] = useState({ title: '', author: '', url: '' });
+  const [notification, setNotification] = useState({ message:'' });
 
   useEffect(() => {
     let storedUser = JSON.parse(window.localStorage.getItem('user'));
@@ -28,7 +28,7 @@ function App() {
 
   const showNotification = (newNotification) => {
     setNotification(newNotification);
-    setTimeout(() => setNotification({message: ''}), notificationTimeLength);
+    setTimeout(() => setNotification({ message: '' }), notificationTimeLength);
   };
 
   const logInHandler = async (event) => {
@@ -54,7 +54,6 @@ function App() {
       setBlogs(_.orderBy(allBlogs, [(blog) => {
         return blog.likes;
       }], ['desc']));
-      
       showNotification({ message: 'Logged in successfully', type: 'positive' });
     }
     catch (error){
@@ -62,7 +61,6 @@ function App() {
       showNotification({ message: 'Log in failed', type: 'negative' });
     }
   };
-  
   const loginForm = () => {
     let notificationComponent = null;
     if(notification.message !== '') notificationComponent = (<Notification message={notification.message} type={notification.type}></Notification>);
@@ -92,7 +90,7 @@ function App() {
     window.localStorage.removeItem('userDetail');
     setUser({});
     setBlogs([]);
-  }
+  };
 
   let createBlogRef = React.createRef();
 
@@ -120,7 +118,7 @@ function App() {
         let newBlogs = [...blogs];
         setBlogs(_.orderBy(newBlogs.filter((blog) => blog.id !== id), [(blog) => blog.likes], ['desc']));
       }
-    }
+    };
   };
 
   const createHandler = async (event) => {
@@ -128,7 +126,7 @@ function App() {
       event.preventDefault();
       createBlogRef.current.toggle();
       let hold = { ...createNew };
-      let newObj = { ...createNew, title: '', author: '', url: ''};
+      let newObj = { ...createNew, title: '', author: '', url: '' };
       setCreateNew(newObj);
       let newBlog = await backEndFns.createNewEntry(hold);
       let newAllBlogs = [...blogs];
@@ -149,14 +147,14 @@ function App() {
     let allBlogs = null;
     if(blogs.length){
       allBlogs = blogs.map((blog, index) => {
-        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={user.id === blog.user.id}/>
+        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={user.id === blog.user.id}/>;
       });
     }
 
     let notificationComponent = null;
     if(notification.message !== '') notificationComponent = (<Notification message={notification.message} type={notification.type}></Notification>);
 
-    
+
     return (
       <>
         {notificationComponent}

@@ -14,9 +14,9 @@ const getToken = () => {
 };
 
 const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
-}
+  const request = axios.get(baseUrl);
+  return request.then(response => response.data);
+};
 
 const login = async (credentials) => {
   let response = await axios.post(loginUrl, credentials);
@@ -26,7 +26,7 @@ const login = async (credentials) => {
 const getOneUserDetails = async (id) => {
   let response = await axios.get(`${userUrl}/${id}`);
   return response.data;
-}
+};
 
 const createNewEntry = async (payload) => {
   let config = {
@@ -42,7 +42,7 @@ const createNewEntry = async (payload) => {
 const incrementLike = async (id) => {
   let response = await axios.put(`${baseUrl}/${id}`);
   return response.data;
-}
+};
 
 const deleteBlog = async (id) => {
   let config = {
@@ -64,4 +64,4 @@ export default {
   incrementLike,
   createNewEntry,
   deleteBlog
-}
+};
