@@ -37,10 +37,5 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "eslint-plugin-jest": "^23.1.1"
-  },
-  "jest": {
-    "setupFiles": [
-      "<rootDir>/src/setupTests.js"
-    ]
   }
 }
