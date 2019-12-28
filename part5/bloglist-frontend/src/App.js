@@ -68,7 +68,7 @@ function App() {
     return (
       <>
         {notificationComponent}
-        <form onSubmit={logInHandler}>
+        <form onSubmit={logInHandler} className='loginForm'>
           <div>
             <label>Username:</label>
             <input type="text" value={username} onChange={(event) => setUsername(event.target.value)}></input>
