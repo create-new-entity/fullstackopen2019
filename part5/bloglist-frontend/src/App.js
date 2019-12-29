@@ -4,6 +4,7 @@ import Blog from './components/Blog';
 import CreateNewBlog from './components/CreateNewBlog';
 import Notification from './components/Notification';
 import Toggle from './components/Toggle';
+import LoginForm from './components/LoginForm';
 import _ from 'lodash';
 
 const notificationTimeLength = 700;
@@ -17,9 +18,12 @@ function App() {
   const [notification, setNotification] = useState({ message:'' });
 
   useEffect(() => {
-    let storedUser = JSON.parse(window.localStorage.getItem('user'));
-    let storedBlogs = JSON.parse(window.localStorage.getItem('blogs'));
-    if(!_.isEmpty(storedUser)){
+    let storedUser = window.localStorage.getItem('user');
+    let storedBlogs = window.localStorage.getItem('blogs');
+
+    if(storedUser){
+      storedUser = JSON.parse(storedUser);
+      storedBlogs = JSON.parse(storedBlogs);
       backEndFns.setToken(storedUser.token);
       setUser(storedUser);
       setBlogs(storedBlogs);
@@ -68,19 +72,7 @@ function App() {
     return (
       <>
         {notificationComponent}
-        <form onSubmit={logInHandler}>
-          <div>
-            <label>Username:</label>
-            <input type="text" value={username} onChange={(event) => setUsername(event.target.value)}></input>
-          </div>
-          <div>
-            <label>Password:</label>
-            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)}></input>
-          </div>
-          <div>
-            <button type="submit">Login</button>
-          </div>
-        </form>
+        <LoginForm logInHandler={logInHandler} username={username} password={password} onChangeUserName={(event) => setUsername(event.target.value)} onChangePassword={(event) => setPassword(event.target.value)}></LoginForm>
       </>
     );
   };
