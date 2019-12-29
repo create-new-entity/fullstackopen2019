@@ -15,6 +15,6 @@ describe('<App/>', () => {
     const loginForm = component.container.querySelector('.loginForm');
     expect(loginForm).toBeDefined();
     const blogs = component.container.querySelectorAll('.blog');
-    expect(blogs).not.toBeDefined();
+    expect(blogs.length).toBe(0);
   });
 });
