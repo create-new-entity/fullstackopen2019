@@ -10,7 +10,4 @@ const localStorageMock = {
   }
 };
 
-localStorageMock.setItem('user', JSON.stringify({}));
-localStorageMock.setItem('blogs', JSON.stringify([]));
-
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });

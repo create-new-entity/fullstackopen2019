@@ -18,9 +18,12 @@ function App() {
   const [notification, setNotification] = useState({ message:'' });
 
   useEffect(() => {
-    let storedUser = JSON.parse(window.localStorage.getItem('user'));
-    let storedBlogs = JSON.parse(window.localStorage.getItem('blogs'));
-    if(!_.isEmpty(storedUser)){
+    let storedUser = window.localStorage.getItem('user');
+    let storedBlogs = window.localStorage.getItem('blogs');
+
+    if(storedUser){
+      storedUser = JSON.parse(storedUser);
+      storedBlogs = JSON.parse(storedBlogs);
       backEndFns.setToken(storedUser.token);
       setUser(storedUser);
       setBlogs(storedBlogs);
