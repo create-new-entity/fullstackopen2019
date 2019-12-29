@@ -10,8 +10,6 @@ import _ from 'lodash';
 const notificationTimeLength = 700;
 
 function App() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
   const [blogs, setBlogs] = useState([]);
   const [createNew, setCreateNew] = useState({ title: '', author: '', url: '' });
@@ -35,35 +33,35 @@ function App() {
     setTimeout(() => setNotification({ message: '' }), notificationTimeLength);
   };
 
-  const logInHandler = async (event) => {
-    try {
-      event.preventDefault();
-
-      let newUser = await backEndFns.login(
-        {
-          username: username,
-          password: password
-        }
-      );
-      let allBlogs = await backEndFns.getAll();
-      window.localStorage.setItem('user', JSON.stringify(newUser));
-      window.localStorage.setItem('blogs', JSON.stringify(allBlogs));
-
-      backEndFns.setToken(newUser.token);
-
-      setUsername('');
-      setPassword('');
-
-      setUser(newUser);
-      setBlogs(_.orderBy(allBlogs, [(blog) => {
-        return blog.likes;
-      }], ['desc']));
-      showNotification({ message: 'Logged in successfully', type: 'positive' });
-    }
-    catch (error){
-      console.log(error);
-      showNotification({ message: 'Log in failed', type: 'negative' });
-    }
+  const logInHandler = (userNameHook, passwordHook) => {
+    return async (event) => {
+      try {
+        event.preventDefault();
+  
+        let newUser = await backEndFns.login(
+          {
+            username: userNameHook.value,
+            password: passwordHook.value
+          }
+        );
+        let allBlogs = await backEndFns.getAll();
+        window.localStorage.setItem('user', JSON.stringify(newUser));
+        window.localStorage.setItem('blogs', JSON.stringify(allBlogs));
+  
+        backEndFns.setToken(newUser.token);
+  
+  
+        setUser(newUser);
+        setBlogs(_.orderBy(allBlogs, [(blog) => {
+          return blog.likes;
+        }], ['desc']));
+        showNotification({ message: 'Logged in successfully', type: 'positive' });
+      }
+      catch (error){
+        console.log(error);
+        showNotification({ message: 'Log in failed', type: 'negative' });
+      }
+    };
   };
   const loginForm = () => {
     let notificationComponent = null;
@@ -72,7 +70,7 @@ function App() {
     return (
       <>
         {notificationComponent}
-        <LoginForm logInHandler={logInHandler} username={username} password={password} onChangeUserName={(event) => setUsername(event.target.value)} onChangePassword={(event) => setPassword(event.target.value)}></LoginForm>
+        <LoginForm logInHandler={logInHandler}></LoginForm>
       </>
     );
   };
