@@ -48,7 +48,7 @@ router.post('/', async (request, response, next) => {
         user.blogs = user.blogs.concat(newBlog.toJSON().id);
         await user.save();
         
-        
+        newBlog = await Blog.findById(newBlog.id).populate('user');
         response.status(201).json(newBlog.toJSON());
     }
     catch(error) {

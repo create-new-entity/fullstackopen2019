@@ -12,7 +12,6 @@ const notificationTimeLength = 700;
 function App() {
   const [user, setUser] = useState({});
   const [blogs, setBlogs] = useState([]);
-  const [createNew, setCreateNew] = useState({ title: '', author: '', url: '' });
   const [notification, setNotification] = useState({ message:'' });
 
   useEffect(() => {
@@ -37,20 +36,19 @@ function App() {
     return async (event) => {
       try {
         event.preventDefault();
-  
+
         let newUser = await backEndFns.login(
           {
             username: userNameHook.value,
             password: passwordHook.value
           }
         );
+        userNameHook.reset();
+        passwordHook.reset();
         let allBlogs = await backEndFns.getAll();
         window.localStorage.setItem('user', JSON.stringify(newUser));
         window.localStorage.setItem('blogs', JSON.stringify(allBlogs));
-  
         backEndFns.setToken(newUser.token);
-  
-  
         setUser(newUser);
         setBlogs(_.orderBy(allBlogs, [(blog) => {
           return blog.likes;
@@ -95,6 +93,7 @@ function App() {
       setBlogs(_.orderBy(newBlogs, [(blog) => {
         return blog.likes;
       }], ['desc']));
+      window.localStorage.setItem('blogs', JSON.stringify(newBlogs));
     };
   };
 
@@ -111,26 +110,38 @@ function App() {
     };
   };
 
-  const createHandler = async (event) => {
-    try {
-      event.preventDefault();
-      createBlogRef.current.toggle();
-      let hold = { ...createNew };
-      let newObj = { ...createNew, title: '', author: '', url: '' };
-      setCreateNew(newObj);
-      let newBlog = await backEndFns.createNewEntry(hold);
-      let newAllBlogs = [...blogs];
-      newAllBlogs.push(newBlog);
-      setBlogs(_.orderBy(newAllBlogs, [(blog) => {
-        return blog.likes;
-      }], ['desc']));
-      showNotification({ message: `Added new blog entry: ${newBlog.title}`, type: 'positive' });
-      window.localStorage.setItem('blogs', JSON.stringify(newAllBlogs));
-    }
-    catch(error){
-      console.log(error);
-      showNotification({ message: 'Missing Title or URL', type: 'negative' });
-    }
+  const createHandler = (titleHook, authorHook, urlHook) => {
+    return async (event) => {
+      try {
+        event.preventDefault();
+
+        let newEntry = {
+          title: titleHook.value,
+          author: authorHook.value,
+          url: urlHook.value
+        };
+
+        titleHook.reset();
+        authorHook.reset();
+        urlHook.reset();
+
+        createBlogRef.current.toggle();
+
+        let newBlog = await backEndFns.createNewEntry(newEntry);
+        let newAllBlogs = [...blogs];
+        newAllBlogs.push(newBlog);
+        newAllBlogs = _.orderBy(newAllBlogs, [(blog) => {
+          return blog.likes;
+        }], ['desc']);
+        setBlogs(newAllBlogs);
+        showNotification({ message: `Added new blog entry: ${newBlog.title}`, type: 'positive' });
+        window.localStorage.setItem('blogs', JSON.stringify(newAllBlogs));
+      }
+      catch(error){
+        console.log(error);
+        showNotification({ message: 'Missing Title or URL', type: 'negative' });
+      }
+    };
   };
 
   const detailsPage = () => {
@@ -150,26 +161,10 @@ function App() {
         {notificationComponent}
         <h1>Logged in user: {user.username}</h1>
         <button onClick={logoutHandler}>Logout</button>
-        <Toggle buttonLabel="New" ref={createBlogRef}><CreateNewBlog createNewInputsChangeHandler={createNewInputsChangeHandler} createNew={createNew} createHandler={createHandler}/></Toggle>
+        <Toggle buttonLabel="New" ref={createBlogRef}><CreateNewBlog createHandler={ createHandler }/></Toggle>
         {allBlogs}
       </>
     );
-  };
-
-  const createNewInputsChangeHandler = (type) => {
-    if(type === 'title') return (event) => {
-      let newObj = { ...createNew, title: event.target.value };
-      setCreateNew(newObj);
-    };
-    else if(type === 'author') return (event) => {
-      let newObj = { ...createNew, author: event.target.value };
-      setCreateNew(newObj);
-    };
-    else if(type === 'url') return (event) => {
-      let newObj = { ...createNew, url: event.target.value };
-      setCreateNew(newObj);
-    };
-    else console.log('Something went wrong');
   };
 
   return (

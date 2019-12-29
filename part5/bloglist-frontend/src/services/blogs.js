@@ -51,7 +51,6 @@ const deleteBlog = async (id) => {
     }
   };
   let response = await axios.delete(`${baseUrl}/${id}`, config);
-  console.log('response.status', response.status);
   return response.status;
 };
 
