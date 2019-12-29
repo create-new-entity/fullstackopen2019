@@ -4,6 +4,7 @@ import Blog from './components/Blog';
 import CreateNewBlog from './components/CreateNewBlog';
 import Notification from './components/Notification';
 import Toggle from './components/Toggle';
+import LoginForm from './components/LoginForm';
 import _ from 'lodash';
 
 const notificationTimeLength = 700;
@@ -68,19 +69,7 @@ function App() {
     return (
       <>
         {notificationComponent}
-        <form onSubmit={logInHandler} className='loginForm'>
-          <div>
-            <label>Username:</label>
-            <input type="text" value={username} onChange={(event) => setUsername(event.target.value)}></input>
-          </div>
-          <div>
-            <label>Password:</label>
-            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)}></input>
-          </div>
-          <div>
-            <button type="submit">Login</button>
-          </div>
-        </form>
+        <LoginForm logInHandler={logInHandler} username={username} password={password} onChangeUserName={(event) => setUsername(event.target.value)} onChangePassword={(event) => setPassword(event.target.value)}></LoginForm>
       </>
     );
   };
