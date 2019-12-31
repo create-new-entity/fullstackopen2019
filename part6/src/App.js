@@ -1,20 +1,15 @@
 import React from 'react';
+import { incrementVoteAction, newContentAction } from './reducers/anecdoteReducer';
 
 const App = (props) => {
   const anecdotes = props.store.getState()
 
   const vote = (id) => {
-    props.store.dispatch({
-      id: id,
-      type: 'INCREMENT_VOTE'
-    });
+    props.store.dispatch(incrementVoteAction(id));
   }
 
   const create = (event) => {
-    props.store.dispatch({
-      type: 'CREATE_ANECDOTE',
-      content: event.target.content.value
-    });
+    props.store.dispatch(newContentAction(event.target.content.value));
   }
 
   return (

@@ -10,6 +10,21 @@ const anecdotesAtStart = [
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
+export const incrementVoteAction = (id) => {
+  return {
+    id: id,
+    type: 'INCREMENT_VOTE'
+  };
+}
+
+export const newContentAction = (content) => {
+  return {
+    type: 'CREATE_ANECDOTE',
+    content: content
+  };
+}
+
+
 const asObject = (anecdote) => {
   return {
     content: anecdote,
@@ -35,5 +50,6 @@ const reducer = (state = initialState, action) => {
       return state;
   }
 }
+
 
 export default reducer
