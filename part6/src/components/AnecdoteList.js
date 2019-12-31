@@ -1,12 +1,15 @@
 import React from 'react';
 import { incrementVoteAction } from './../reducers/anecdoteReducer';
+import { voteOrCreateNotification } from './../reducers/notificationReducer';
 
 const AnecdoteList = (props) => {
 
-  const anecdotes = props.store.getState();
+  const anecdotes = props.store.getState().anecdotes;
 
   const vote = (id) => {
+    let votedAnecdote = anecdotes.find(anecdote => anecdote.id === id);
     props.store.dispatch(incrementVoteAction(id));
+    props.store.dispatch(voteOrCreateNotification('vote', votedAnecdote.content));
   }
 
   return(

@@ -1,14 +1,23 @@
-import React from 'react'
+import React from 'react';
+import { hideNotification } from './../reducers/notificationReducer';
 
-const Notification = () => {
+const Notification = (props) => {
   const style = {
     border: 'solid',
     padding: 10,
-    borderWidth: 1
+    borderWidth: 1,
+    display: props.store.getState().notification.display
   }
+
+  if(style.display !== 'none'){
+    setTimeout(() => {
+      props.store.dispatch(hideNotification());
+    }, 3500);
+  }
+  
   return (
     <div style={style}>
-      render here notification...
+      { props.store.getState().notification.content }
     </div>
   )
 }
