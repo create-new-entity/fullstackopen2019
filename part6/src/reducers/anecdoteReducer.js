@@ -1,3 +1,4 @@
+import _ from 'lodash';
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -20,16 +21,16 @@ const asObject = (anecdote) => {
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
-
   let newState = [...state];
 
   switch(action.type){
     case 'INCREMENT_VOTE':
       let targetIndex = newState.findIndex(anecdote => anecdote.id === action.id);
       newState[targetIndex].votes++;
-      return newState;
+      return _.orderBy(newState, (currState) => currState.votes, ['desc']);
+    case 'CREATE_ANECDOTE':
+      let newContent = asObject(action.content);
+      return _.orderBy(newState.concat(newContent), (currState) => currState.votes, ['desc']);
     default:
       return state;
   }

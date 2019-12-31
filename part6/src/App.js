@@ -10,6 +10,13 @@ const App = (props) => {
     });
   }
 
+  const create = (event) => {
+    props.store.dispatch({
+      type: 'CREATE_ANECDOTE',
+      content: event.target.content.value
+    });
+  }
+
   return (
     <div>
       <h2>Anecdotes</h2>
@@ -25,8 +32,8 @@ const App = (props) => {
         </div>
       )}
       <h2>create new</h2>
-      <form>
-        <div><input /></div>
+      <form onSubmit={create}>
+        <div><input name='content'/></div>
         <button>create</button>
       </form>
     </div>
