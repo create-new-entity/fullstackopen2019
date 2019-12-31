@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import valueChangeReducer from './reducers/valueChangeReducer';
 import './index.css';
-
 
 
 const Button = ({text, updateCounter}) => {
@@ -54,29 +55,23 @@ const Statistics = ({good, neutral, bad}) => {
 };
 
 
-
+const store = createStore(valueChangeReducer);
 const App = () => {
-  // save clicks of each button to own state
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
-
-  const updateBtnCounter = (feedback, feedbackStateFn) => () => feedbackStateFn(feedback+1);
-
-  return (
+    return (
     <div>
         <p>Give Feedback</p>
         <br></br>
-        <Button text={'Good'} updateCounter={updateBtnCounter(good, setGood)}></Button>
-        <Button text={'Neutral'} updateCounter={updateBtnCounter(neutral, setNeutral)}></Button>
-        <Button text={'Bad'} updateCounter={updateBtnCounter(bad, setBad)}></Button>
-        <Statistics good={good} neutral={neutral} bad={bad}></Statistics>
+        <Button text={'Good'} updateCounter={ () => store.dispatch({ type: 'INCREMENT', feedback: 'good'}) }></Button>
+        <Button text={'Neutral'} updateCounter={() => store.dispatch({ type: 'INCREMENT', feedback: 'neutral'})}></Button>
+        <Button text={'Bad'} updateCounter={() => store.dispatch({ type: 'INCREMENT', feedback: 'bad'})}></Button>
+        <Statistics {...store.getState()}></Statistics>
     </div>
   )
 }
 
-ReactDOM.render(<App />, 
-  document.getElementById('root')
-)
+const renderApp = () => {
+    ReactDOM.render(<App />, document.getElementById('root'));
+};
 
-ReactDOM.render(<App />, document.getElementById('root'));
+renderApp();
+store.subscribe(renderApp);
