@@ -7,13 +7,19 @@ import { connect } from 'react-redux';
 const mapStateToProps = (state) => {
   return {
     anecdotes: state.anecdotes,
-    filter: state.filter
+    filter: state.filter,
+    visibleAnecdotes: anecdotesToShow(state)
   };
 };
 
 const mapDispatchToProps = {
   incrementVoteAction,
   voteOrCreateNotificationAction
+};
+
+const anecdotesToShow = ({ anecdotes, filter }) => {
+  if(filter.length) return anecdotes.filter(anecdote => anecdote.content.includes(filter))
+  return anecdotes;
 };
 
 
@@ -30,7 +36,7 @@ const AnecdoteList = (props) => {
   return(
     <>
       {
-        anecdotes.map(anecdote =>
+        props.visibleAnecdotes.map(anecdote =>
           <div key={anecdote.id}>
             <div>
               {anecdote.content}
