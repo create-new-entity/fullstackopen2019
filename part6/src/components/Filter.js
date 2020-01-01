@@ -8,9 +8,13 @@ const mapsStateToProps = (state) => {
   };
 };
 
+const mapDispatchToProps = {
+  newFilterContentAction
+};
+
 const Filter = (props) => {
   const onChangeHandler = (event) => {
-    // props.store.dispatch(newFilterContentAction('FILTER', event.target.value));
+    props.newFilterContentAction('FILTER', event.target.value);
     event.target.value = '';
   };
 
@@ -25,4 +29,4 @@ const Filter = (props) => {
   );
 };
 
-export default connect(mapsStateToProps)(Filter);
+export default connect(mapsStateToProps, mapDispatchToProps)(Filter);

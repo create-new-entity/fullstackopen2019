@@ -1,6 +1,6 @@
 import React from 'react';
 import { incrementVoteAction } from './../reducers/anecdoteReducer';
-import { voteOrCreateNotification } from './../reducers/notificationReducer';
+import { voteOrCreateNotificationAction } from './../reducers/notificationReducer';
 import { connect } from 'react-redux';
 
 
@@ -11,6 +11,11 @@ const mapStateToProps = (state) => {
   };
 };
 
+const mapDispatchToProps = {
+  incrementVoteAction,
+  voteOrCreateNotificationAction
+};
+
 
 const AnecdoteList = (props) => {
 
@@ -18,8 +23,8 @@ const AnecdoteList = (props) => {
 
   const vote = (id) => {
     let votedAnecdote = anecdotes.find(anecdote => anecdote.id === id);
-    // props.store.dispatch(incrementVoteAction(id));
-    // props.store.dispatch(voteOrCreateNotification('vote', votedAnecdote.content));
+    props.incrementVoteAction(id);
+    props.voteOrCreateNotificationAction('vote', votedAnecdote.content);
   }
 
   return(
@@ -41,4 +46,4 @@ const AnecdoteList = (props) => {
   );
 };
 
-export default connect(mapStateToProps)(AnecdoteList);
+export default connect(mapStateToProps, mapDispatchToProps)(AnecdoteList);

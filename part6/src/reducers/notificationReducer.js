@@ -26,7 +26,7 @@ const notificationReducer = (state = initialState, action) => {
   }
 };
 
-export const voteOrCreateNotification = (type, content) => {
+export const voteOrCreateNotificationAction = (type, content) => {
   return {
     type: type,
     data: {
@@ -36,7 +36,7 @@ export const voteOrCreateNotification = (type, content) => {
   };
 }
 
-export const hideNotification = () => {
+export const hideNotificationAction = () => {
   return {
     type: 'hide',
     data: {
