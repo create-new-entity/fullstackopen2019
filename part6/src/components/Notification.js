@@ -1,5 +1,16 @@
 import React from 'react';
-import { hideNotification } from './../reducers/notificationReducer';
+import { hideNotificationAction } from './../reducers/notificationReducer';
+import { connect } from 'react-redux';
+
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification
+  }
+};
+
+const mapDispatchToProps = {
+  hideNotificationAction
+};
 
 const Notification = (props) => {
   const style = {
@@ -8,20 +19,20 @@ const Notification = (props) => {
     borderWidth: 1,
     marginTop: 16,
     marginBottom: 16,
-    display: props.store.getState().notification.display
+    display: props.notification.display
   }
 
   if(style.display !== 'none'){
     setTimeout(() => {
-      props.store.dispatch(hideNotification());
+      props.hideNotificationAction();
     }, 3500);
   }
   
   return (
     <div style={style}>
-      { props.store.getState().notification.content }
+      { props.notification.content }
     </div>
   )
 }
 
-export default Notification
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);
