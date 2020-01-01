@@ -1,10 +1,20 @@
 import React from 'react';
 import { incrementVoteAction } from './../reducers/anecdoteReducer';
 import { voteOrCreateNotification } from './../reducers/notificationReducer';
+import { connect } from 'react-redux';
+
+
+const mapStateToProps = (state) => {
+  return {
+    anecdotes: state.anecdotes,
+    filter: state.filter
+  };
+};
+
 
 const AnecdoteList = (props) => {
 
-  const anecdotes = props.store.getState().anecdotes;
+  const anecdotes = props.anecdotes;
 
   const vote = (id) => {
     let votedAnecdote = anecdotes.find(anecdote => anecdote.id === id);
@@ -31,4 +41,4 @@ const AnecdoteList = (props) => {
   );
 };
 
-export default AnecdoteList;
+export default connect(mapStateToProps)(AnecdoteList);
