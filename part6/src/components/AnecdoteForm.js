@@ -1,13 +1,14 @@
 import React from 'react';
 import { newContentAction } from './../reducers/anecdoteReducer';
 import { voteOrCreateNotification } from './../reducers/notificationReducer';
+import { connect } from 'react-redux';
 
 const AnecdoteForm = (props) => {
 
   const create = (event) => {
     event.preventDefault();
-    props.store.dispatch(newContentAction(event.target.content.value));
-    props.store.dispatch(voteOrCreateNotification('create', event.target.content.value));
+    // props.store.dispatch(newContentAction(event.target.content.value));
+    // props.store.dispatch(voteOrCreateNotification('create', event.target.content.value));
     event.target.content.value = '';
   }
 

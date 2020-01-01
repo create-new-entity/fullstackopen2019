@@ -18,8 +18,8 @@ const AnecdoteList = (props) => {
 
   const vote = (id) => {
     let votedAnecdote = anecdotes.find(anecdote => anecdote.id === id);
-    props.store.dispatch(incrementVoteAction(id));
-    props.store.dispatch(voteOrCreateNotification('vote', votedAnecdote.content));
+    // props.store.dispatch(incrementVoteAction(id));
+    // props.store.dispatch(voteOrCreateNotification('vote', votedAnecdote.content));
   }
 
   return(

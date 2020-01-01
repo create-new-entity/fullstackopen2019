@@ -8,18 +8,19 @@ const Notification = (props) => {
     borderWidth: 1,
     marginTop: 16,
     marginBottom: 16,
-    display: props.store.getState().notification.display
+    display: 'none'
+    // display: props.store.getState().notification.display
   }
 
   if(style.display !== 'none'){
     setTimeout(() => {
-      props.store.dispatch(hideNotification());
+      // props.store.dispatch(hideNotification());
     }, 3500);
   }
   
   return (
     <div style={style}>
-      { props.store.getState().notification.content }
+      {/* { props.store.getState().notification.content } */}
     </div>
   )
 }
