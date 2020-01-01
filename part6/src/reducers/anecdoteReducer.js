@@ -46,8 +46,10 @@ const anecdotesReducer = (state = initialState, action) => {
     case 'CREATE_ANECDOTE':
       let newContent = asObject(action.content);
       return _.orderBy(newState.concat(newContent), (currState) => currState.votes, ['desc']);
+    case 'FILTER':
+      return _.orderBy(newState.filter((anecdote) => anecdote.content.includes(action.content)), (currState) => currState.votes, ['desc']);
     default:
-      return state;
+      return newState;
   }
 }
 

@@ -6,6 +6,8 @@ const Notification = (props) => {
     border: 'solid',
     padding: 10,
     borderWidth: 1,
+    marginTop: 16,
+    marginBottom: 16,
     display: props.store.getState().notification.display
   }
 
