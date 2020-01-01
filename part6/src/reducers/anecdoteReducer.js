@@ -1,14 +1,4 @@
 import _ from 'lodash';
-const anecdotesAtStart = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
-]
-
-const getId = () => (100000 * Math.random()).toFixed(0)
 
 export const incrementVoteAction = (id) => {
   return {
@@ -17,25 +7,22 @@ export const incrementVoteAction = (id) => {
   };
 }
 
-export const newContentAction = (content) => {
+export const newContentAction = (anecdote) => {
   return {
     type: 'CREATE_ANECDOTE',
-    content: content
+    data: anecdote
   };
 }
 
-
-const asObject = (anecdote) => {
+export const initAnecdotesAction = (anecdotes) => {
   return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  }
-}
+    type: 'INIT_ANECDOTES',
+    data: anecdotes
+  };
+};
 
-const initialState = anecdotesAtStart.map(asObject)
 
-const anecdotesReducer = (state = initialState, action) => {
+const anecdotesReducer = (state = [], action) => {
   let newState = [...state];
 
   switch(action.type){
@@ -44,10 +31,11 @@ const anecdotesReducer = (state = initialState, action) => {
       newState[targetIndex].votes++;
       return _.orderBy(newState, (currState) => currState.votes, ['desc']);
     case 'CREATE_ANECDOTE':
-      let newContent = asObject(action.content);
-      return _.orderBy(newState.concat(newContent), (currState) => currState.votes, ['desc']);
+      return _.orderBy(newState.concat(action.data), (currState) => currState.votes, ['desc']);
     case 'FILTER':
       return _.orderBy(newState.filter((anecdote) => anecdote.content.includes(action.content)), (currState) => currState.votes, ['desc']);
+    case 'INIT_ANECDOTES':
+      return action.data;
     default:
       return newState;
   }

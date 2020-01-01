@@ -2,6 +2,7 @@ import React from 'react';
 import { newContentAction } from './../reducers/anecdoteReducer';
 import { voteOrCreateNotificationAction } from './../reducers/notificationReducer';
 import { connect } from 'react-redux';
+import backendFns from './../services/anecdotes';
 
 const mapDispatchToProps = {
   newContentAction,
@@ -12,8 +13,17 @@ const AnecdoteForm = (props) => {
 
   const create = (event) => {
     event.preventDefault();
-    props.newContentAction(event.target.content.value);
-    props.voteOrCreateNotificationAction('create', event.target.content.value);
+
+    let newAnecdote = {
+      content: event.target.content.value,
+      votes: 0
+    };
+
+    backendFns.createNew(newAnecdote)
+      .then((anecdote) => {
+        props.newContentAction(anecdote);
+        props.voteOrCreateNotificationAction('create', anecdote.content);
+      });
     event.target.content.value = '';
   }
 
