@@ -26,13 +26,17 @@ const notificationReducer = (state = initialState, action) => {
   }
 };
 
-export const voteOrCreateNotificationAction = (type, content) => {
-  return {
-    type: type,
-    data: {
-      content: content,
-      display: ''
-    }
+export const showNotificationAction = (type, content, timer) => {
+  return async (dispatch) => {
+    dispatch({
+      type: type,
+      data: {
+        content: content,
+        display: ''
+      }
+    });
+
+    setTimeout(() => dispatch(hideNotificationAction()), timer * 1000);
   };
 }
 

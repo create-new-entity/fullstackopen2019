@@ -4,7 +4,6 @@ import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
 import Filter from './components/Filter';
 import { initAnecdotesAction } from './reducers/anecdoteReducer';
-import backendFns from './services/anecdotes';
 import { connect } from 'react-redux';
 
 const mapDispatchToProps = {
@@ -14,10 +13,7 @@ const mapDispatchToProps = {
 const App = (props) => {
 
   useEffect (() => {
-    backendFns.getAll()
-      .then((anecdotes) => {
-        props.initAnecdotesAction(anecdotes);
-      });
+    props.initAnecdotesAction();
   }, []);
 
   return (
