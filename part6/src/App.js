@@ -14,10 +14,7 @@ const mapDispatchToProps = {
 const App = (props) => {
 
   useEffect (() => {
-    backendFns.getAll()
-      .then((anecdotes) => {
-        props.initAnecdotesAction(anecdotes);
-      });
+    props.initAnecdotesAction();
   }, []);
 
   return (
