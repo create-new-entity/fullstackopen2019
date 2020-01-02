@@ -1,5 +1,4 @@
 import React from 'react';
-import { hideNotificationAction } from './../reducers/notificationReducer';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => {
@@ -8,9 +7,6 @@ const mapStateToProps = (state) => {
   }
 };
 
-const mapDispatchToProps = {
-  hideNotificationAction
-};
 
 const Notification = (props) => {
   const style = {
@@ -22,11 +18,6 @@ const Notification = (props) => {
     display: props.notification.display
   }
 
-  if(style.display !== 'none'){
-    setTimeout(() => {
-      props.hideNotificationAction();
-    }, 3500);
-  }
   
   return (
     <div style={style}>
@@ -35,4 +26,4 @@ const Notification = (props) => {
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notification);
+export default connect(mapStateToProps)(Notification);
