@@ -19,11 +19,8 @@ const AnecdoteForm = (props) => {
       votes: 0
     };
 
-    backendFns.createNew(newAnecdote)
-      .then((anecdote) => {
-        props.newContentAction(anecdote);
-        props.voteOrCreateNotificationAction('create', anecdote.content);
-      });
+    props.newContentAction(newAnecdote);
+    props.voteOrCreateNotificationAction('create', newAnecdote.content);
     event.target.content.value = '';
   }
 
