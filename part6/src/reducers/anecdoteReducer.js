@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import backendFns from './../services/anecdotes';
 
 export const incrementVoteAction = (id) => {
   return {
@@ -14,10 +15,13 @@ export const newContentAction = (anecdote) => {
   };
 }
 
-export const initAnecdotesAction = (anecdotes) => {
-  return {
-    type: 'INIT_ANECDOTES',
-    data: anecdotes
+export const initAnecdotesAction = () => {
+  return async (dispatch) => {
+    let anecdotes = await backendFns.getAll();
+    dispatch({
+      type: 'INIT_ANECDOTES',
+      data: anecdotes
+    });
   };
 };
 
