@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom';
 
 const Menu = ({anecdotes}) => {
   const padding = {
@@ -31,9 +31,11 @@ const AnecdoteList = ({ anecdotes }) => (
         {
           anecdotes.map(anecdote => {
           return (
-              <>
-                <li key={anecdote.id}><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>
-              </>
+            <li key={anecdote.id}>
+              <Link to={`/anecdotes/${anecdote.id}`}>
+                {anecdote.content}
+              </Link>
+            </li>
           );
         })}
     </ul>
@@ -62,7 +64,7 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
+const CreateNew = withRouter((props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
@@ -76,6 +78,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.history.push('/');
+    props.showNotification(`${content} created!!`, 10);
   }
 
   return (
@@ -98,8 +102,18 @@ const CreateNew = (props) => {
       </form>
     </div>
   )
+});
 
-}
+const Notification = ({message}) => {
+  if(!message.length) return null;
+  const style = {
+    borderStyle: 'solid',
+    borderColor: 'black',
+    borderRadius: 5,
+    padding: 3
+  };
+  return <p style={style}>{message}</p>
+};
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
@@ -119,7 +133,14 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState('');
+
+  const showNotification = (message, duration) => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification('');
+    }, duration * 1000);
+  };
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
@@ -143,10 +164,11 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
+      <Notification message={notification}/>
       <Router>
         <Menu anecdotes={anecdotes}/>
         <Route exact path='/' render={() => (<AnecdoteList anecdotes={anecdotes}/>)}/>
-        <Route path='/new' render={() => (<CreateNew/>)}/>
+        <Route path='/new' render={() => (<CreateNew addNew={addNew} showNotification={showNotification}/>)}/>
         <Route path='/about' render={() => (<About/>)}/>
         <Route path='/anecdotes/:id' render={({ match }) => <Anecdote anecdote={anecdoteById(match.params.id)}/>}/>
       </Router>
