@@ -7,25 +7,35 @@ const Menu = ({anecdotes}) => {
   }
   return (
     <div>
-      <Router>
-        <div>
-          <Link style={padding} to='/'>anecdotes</Link>
-          <Link style={padding} to='/new'>create new</Link>
-          <Link style={padding} to='/about'>about</Link>
-        </div>
-        <Route exact path='/' render={() => (<AnecdoteList anecdotes={anecdotes}/>)}/>
-        <Route path='/new' render={() => (<CreateNew/>)}/>
-        <Route path='/about' render={() => (<About/>)}/>
-      </Router>
+      <Link style={padding} to='/'>anecdotes</Link>
+      <Link style={padding} to='/new'>create new</Link>
+      <Link style={padding} to='/about'>about</Link>
     </div>
   )
+}
+
+const Anecdote = (anecdote) => {
+  return (
+    <>
+      <h2>{anecdote.content}</h2>
+      <p>has {anecdote.votes} vote(s)</p>
+      <p>for more information see {anecdote.info}</p>
+    </>
+  );
 }
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+        {
+          anecdotes.map(anecdote => {
+          return (
+              <>
+                <li key={anecdote.id}><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>
+              </>
+          );
+        })}
     </ul>
   </div>
 )
@@ -133,7 +143,13 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <Menu anecdotes={anecdotes}/>
+      <Router>
+        <Menu anecdotes={anecdotes}/>
+        <Route exact path='/' render={() => (<AnecdoteList anecdotes={anecdotes}/>)}/>
+        <Route path='/new' render={() => (<CreateNew/>)}/>
+        <Route path='/about' render={() => (<About/>)}/>
+        <Route path='/anecdotes/:id' render={({ match }) => <Anecdote anecdote={anecdoteById(match.params.id)}/>}/>
+      </Router>
       <Footer />
     </div>
   )
