@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkNfX0xNMTAiLCJpZCI6IjVkZjEwMTk3ZDg3OTg5M2JiYzllY2ZlZiIsImlhdCI6MTU3NjU5MjY1Nn0.SGGv-MGkgiQI1PSweRRqK4_rPniGW0tOGXkTHd4bvSQ
+
+{
+  "title": "Digital Fortress",
+  "author": "Dan Brown",
+  "url": "https://en.wikipedia.org/wiki/Digital_Fortress",
+  "likes": 5000
+}
