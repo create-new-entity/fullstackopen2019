@@ -6,24 +6,41 @@ import Notification from './components/Notification';
 import Toggle from './components/Toggle';
 import LoginForm from './components/LoginForm';
 import _ from 'lodash';
+import {
+  userInititializeAction,
+  userLoginAction,
+  userLogoutAction
+} from './reducers/userReducer';
+
+import { connect } from 'react-redux';
+
 
 const notificationTimeLength = 700;
 
-function App() {
-  const [user, setUser] = useState({});
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  };
+};
+
+const mapDispatchToProps = {
+  userInititializeAction,
+  userLoginAction,
+  userLogoutAction
+};
+
+const App = (props) => {
   const [blogs, setBlogs] = useState([]);
   const [notification, setNotification] = useState({ message:'' });
 
   useEffect(() => {
-    let storedUser = window.localStorage.getItem('user');
+    props.userInititializeAction();
     let storedBlogs = window.localStorage.getItem('blogs');
-
-    if(storedUser){
-      storedUser = JSON.parse(storedUser);
+    if(storedBlogs){
       storedBlogs = JSON.parse(storedBlogs);
-      backEndFns.setToken(storedUser.token);
-      setUser(storedUser);
-      setBlogs(storedBlogs);
+      setBlogs( _.orderBy(storedBlogs, [(blog) => {
+        return blog.likes;
+      }], ['desc']));
     }
   }, []);
 
@@ -46,10 +63,9 @@ function App() {
         userNameHook.reset();
         passwordHook.reset();
         let allBlogs = await backEndFns.getAll();
-        window.localStorage.setItem('user', JSON.stringify(newUser));
         window.localStorage.setItem('blogs', JSON.stringify(allBlogs));
         backEndFns.setToken(newUser.token);
-        setUser(newUser);
+        props.userLoginAction(newUser);
         setBlogs(_.orderBy(allBlogs, [(blog) => {
           return blog.likes;
         }], ['desc']));
@@ -76,7 +92,7 @@ function App() {
   const logoutHandler = () => {
     window.localStorage.removeItem('user');
     window.localStorage.removeItem('userDetail');
-    setUser({});
+    props.userLogoutAction();
     setBlogs([]);
   };
 
@@ -148,7 +164,7 @@ function App() {
     let allBlogs = null;
     if(blogs.length){
       allBlogs = blogs.map((blog, index) => {
-        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={user.id === blog.user.id}/>;
+        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={props.user.id === blog.user.id}/>;
       });
     }
 
@@ -159,7 +175,7 @@ function App() {
     return (
       <>
         {notificationComponent}
-        <h1>Logged in user: {user.username}</h1>
+        <h1>Logged in user: {props.user.username}</h1>
         <button onClick={logoutHandler}>Logout</button>
         <Toggle buttonLabel="New" ref={createBlogRef}><CreateNewBlog createHandler={ createHandler }/></Toggle>
         {allBlogs}
@@ -169,9 +185,9 @@ function App() {
 
   return (
     <div className="App">
-      { !_.isEmpty(user) ?  detailsPage() : loginForm() }
+      { !_.isEmpty(props.user) ?  detailsPage() : loginForm() }
     </div>
   );
-}
+};
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
