@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import backEndFns from './services/blogs';
 import Blog from './components/Blog';
 import CreateNewBlog from './components/CreateNewBlog';
@@ -21,15 +21,18 @@ import {
   blogsCreateAction
 } from './reducers/blogsReducer';
 
+import {
+  showNotificationAction
+} from './reducers/notificationReducer';
+
 import { connect } from 'react-redux';
 
-
-const notificationTimeLength = 700;
 
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    blogs: state.blogs
+    blogs: state.blogs,
+    notification: state.notification
   };
 };
 
@@ -44,12 +47,13 @@ const mapDispatchToProps = {
   blogsLogoutAction,
   blogsLikeAction,
   blogsDeleteAction,
-  blogsCreateAction
+  blogsCreateAction,
+
+  showNotificationAction
 
 };
 
 const App = (props) => {
-  const [notification, setNotification] = useState({ message:'' });
 
   useEffect(() => {
     props.userInititializeAction();
@@ -57,8 +61,7 @@ const App = (props) => {
   }, []);
 
   const showNotification = (newNotification) => {
-    setNotification(newNotification);
-    setTimeout(() => setNotification({ message: '' }), notificationTimeLength);
+    props.showNotificationAction(newNotification);
   };
 
   const logInHandler = (userNameHook, passwordHook) => {
@@ -86,7 +89,7 @@ const App = (props) => {
   };
   const loginForm = () => {
     let notificationComponent = null;
-    if(notification.message !== '') notificationComponent = (<Notification message={notification.message} type={notification.type}></Notification>);
+    if(props.notification.message !== '') notificationComponent = (<Notification message={props.notification.message} type={props.notification.type}></Notification>);
 
     return (
       <>
@@ -151,7 +154,7 @@ const App = (props) => {
     }
 
     let notificationComponent = null;
-    if(notification.message !== '') notificationComponent = (<Notification message={notification.message} type={notification.type}></Notification>);
+    if(props.notification.message !== '') notificationComponent = (<Notification message={props.notification.message} type={props.notification.type}></Notification>);
 
 
     return (

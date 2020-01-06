@@ -87,8 +87,6 @@ export const blogsCreateAction = (blog) => {
 const blogsReducer = (state = [], action) => {
   let newBlogs, foundIndex;
 
-  console.log('action.blogs', action.blogs);
-
   switch (action.type) {
 
   case 'INITIALIZE':
