@@ -8,9 +8,8 @@ export const userInititializeAction = () => {
       user = storedUser;
       await backEndFns.setToken(user.token);
     }
-    console.log('dispatching', user);
     dispatch({
-      type: 'INITIALIZE_USER',
+      type: 'INITIALIZE',
       user
     });
   };
@@ -18,6 +17,7 @@ export const userInititializeAction = () => {
 
 export const userLoginAction = (user) => {
   return async (dispatch) => {
+    await backEndFns.setToken(user.token);
     window.localStorage.setItem('user', JSON.stringify(user));
     dispatch({
       type: 'LOGIN',
@@ -41,10 +41,11 @@ export const userLogoutAction = () => {
 const userReducer = (state = {}, action) => {
   switch (action.type) {
 
-  case 'INITIALIZE_USER':
+  case 'INITIALIZE':
   case 'LOGIN':
   case 'LOGOUT':
-    return action.user;
+    if(action.user) return action.user;
+    return state;
   default:
     return state;
   }

@@ -12,6 +12,15 @@ import {
   userLogoutAction
 } from './reducers/userReducer';
 
+import {
+  blogsInitializeAction,
+  blogsLoginAction,
+  blogsLogoutAction,
+  blogsLikeAction,
+  blogsDeleteAction,
+  blogsCreateAction
+} from './reducers/blogsReducer';
+
 import { connect } from 'react-redux';
 
 
@@ -19,29 +28,32 @@ const notificationTimeLength = 700;
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user
+    user: state.user,
+    blogs: state.blogs
   };
 };
 
 const mapDispatchToProps = {
+
   userInititializeAction,
   userLoginAction,
-  userLogoutAction
+  userLogoutAction,
+
+  blogsInitializeAction,
+  blogsLoginAction,
+  blogsLogoutAction,
+  blogsLikeAction,
+  blogsDeleteAction,
+  blogsCreateAction
+
 };
 
 const App = (props) => {
-  const [blogs, setBlogs] = useState([]);
   const [notification, setNotification] = useState({ message:'' });
 
   useEffect(() => {
     props.userInititializeAction();
-    let storedBlogs = window.localStorage.getItem('blogs');
-    if(storedBlogs){
-      storedBlogs = JSON.parse(storedBlogs);
-      setBlogs( _.orderBy(storedBlogs, [(blog) => {
-        return blog.likes;
-      }], ['desc']));
-    }
+    props.blogsInitializeAction();
   }, []);
 
   const showNotification = (newNotification) => {
@@ -62,13 +74,8 @@ const App = (props) => {
         );
         userNameHook.reset();
         passwordHook.reset();
-        let allBlogs = await backEndFns.getAll();
-        window.localStorage.setItem('blogs', JSON.stringify(allBlogs));
-        backEndFns.setToken(newUser.token);
         props.userLoginAction(newUser);
-        setBlogs(_.orderBy(allBlogs, [(blog) => {
-          return blog.likes;
-        }], ['desc']));
+        props.blogsLoginAction();
         showNotification({ message: 'Logged in successfully', type: 'positive' });
       }
       catch (error){
@@ -90,39 +97,21 @@ const App = (props) => {
   };
 
   const logoutHandler = () => {
-    window.localStorage.removeItem('user');
-    window.localStorage.removeItem('userDetail');
     props.userLogoutAction();
-    setBlogs([]);
+    props.blogsLogoutAction();
   };
 
   let createBlogRef = React.createRef();
 
   const likeHandler = (id) => {
     return async () => {
-      let res = await backEndFns.incrementLike(id);
-      let newBlogs = [...blogs];
-      let foundIndex = _.findIndex(newBlogs, (blog) => {
-        return blog.id === res.id;
-      });
-      newBlogs[foundIndex].likes++;
-      setBlogs(_.orderBy(newBlogs, [(blog) => {
-        return blog.likes;
-      }], ['desc']));
-      window.localStorage.setItem('blogs', JSON.stringify(newBlogs));
+      props.blogsLikeAction(id);
     };
   };
 
   const deleteHandler = (id) => {
     return async () => {
-      let blogTitle = blogs.find((blog) => blog.id === id).title;
-      let reply = window.confirm(`Delete ${blogTitle}?`);
-      if(!reply) return;
-      let statusCode = await backEndFns.deleteBlog(id);
-      if(statusCode === 204){
-        let newBlogs = [...blogs];
-        setBlogs(_.orderBy(newBlogs.filter((blog) => blog.id !== id), [(blog) => blog.likes], ['desc']));
-      }
+      props.blogsDeleteAction(id);
     };
   };
 
@@ -143,15 +132,8 @@ const App = (props) => {
 
         createBlogRef.current.toggle();
 
-        let newBlog = await backEndFns.createNewEntry(newEntry);
-        let newAllBlogs = [...blogs];
-        newAllBlogs.push(newBlog);
-        newAllBlogs = _.orderBy(newAllBlogs, [(blog) => {
-          return blog.likes;
-        }], ['desc']);
-        setBlogs(newAllBlogs);
-        showNotification({ message: `Added new blog entry: ${newBlog.title}`, type: 'positive' });
-        window.localStorage.setItem('blogs', JSON.stringify(newAllBlogs));
+        props.blogsCreateAction(newEntry);
+        showNotification({ message: `Added new blog entry: ${newEntry.title}`, type: 'positive' });
       }
       catch(error){
         console.log(error);
@@ -162,8 +144,8 @@ const App = (props) => {
 
   const detailsPage = () => {
     let allBlogs = null;
-    if(blogs.length){
-      allBlogs = blogs.map((blog, index) => {
+    if(props.blogs.length){
+      allBlogs = props.blogs.map((blog, index) => {
         return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={props.user.id === blog.user.id}/>;
       });
     }
