@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
 import backEndFns from './services/blogs';
 import Blog from './components/Blog';
 import CreateNewBlog from './components/CreateNewBlog';
 import Notification from './components/Notification';
 import Toggle from './components/Toggle';
 import LoginForm from './components/LoginForm';
+import Users from './components/Users';
 import _ from 'lodash';
 import {
   userInititializeAction,
@@ -22,6 +28,11 @@ import {
 } from './reducers/blogsReducer';
 
 import {
+  reloadUsersAction,
+  clearUsersAction
+} from './reducers/usersReducer';
+
+import {
   showNotificationAction
 } from './reducers/notificationReducer';
 
@@ -32,7 +43,8 @@ const mapStateToProps = (state) => {
   return {
     user: state.user,
     blogs: state.blogs,
-    notification: state.notification
+    notification: state.notification,
+    users: state.users
   };
 };
 
@@ -49,14 +61,17 @@ const mapDispatchToProps = {
   blogsDeleteAction,
   blogsCreateAction,
 
-  showNotificationAction
+  reloadUsersAction,
+  clearUsersAction,
 
+  showNotificationAction
 };
 
 const App = (props) => {
 
   useEffect(() => {
     props.userInititializeAction();
+    props.reloadUsersAction();
     props.blogsInitializeAction();
   }, []);
 
@@ -78,6 +93,7 @@ const App = (props) => {
         userNameHook.reset();
         passwordHook.reset();
         props.userLoginAction(newUser);
+        props.reloadUsersAction();
         props.blogsLoginAction();
         showNotification({ message: 'Logged in successfully', type: 'positive' });
       }
@@ -101,6 +117,7 @@ const App = (props) => {
 
   const logoutHandler = () => {
     props.userLogoutAction();
+    props.clearUsersAction();
     props.blogsLogoutAction();
   };
 
@@ -145,6 +162,7 @@ const App = (props) => {
     };
   };
 
+
   const detailsPage = () => {
     let allBlogs = null;
     if(props.blogs.length){
@@ -159,11 +177,36 @@ const App = (props) => {
 
     return (
       <>
-        {notificationComponent}
-        <h1>Logged in user: {props.user.username}</h1>
-        <button onClick={logoutHandler}>Logout</button>
-        <Toggle buttonLabel="New" ref={createBlogRef}><CreateNewBlog createHandler={ createHandler }/></Toggle>
-        {allBlogs}
+        <div>
+          <Router>
+            <div>
+              <Link to='/users'>Users</Link>
+            </div>
+            <Route path='/' render={() => {
+              return (
+                <div>
+                  <h1>Logged in user: {props.user.username}</h1>
+                  <button onClick={logoutHandler}>Logout</button>
+                </div>
+              );
+            }}/>
+            <Route exact path='/' render={() => {
+              return (
+                <div>
+                  {notificationComponent}
+                  <Toggle buttonLabel="New" ref={createBlogRef}><CreateNewBlog createHandler={ createHandler }/></Toggle>
+                  {allBlogs}
+                </div>
+              );
+            }}/>
+            <Route path='/users' render={() => {
+              props.reloadUsersAction();
+              return (
+                <Users/>
+              );
+            }}/>
+          </Router>
+        </div>
       </>
     );
   };

@@ -28,6 +28,11 @@ const getOneUserDetails = async (id) => {
   return response.data;
 };
 
+const getAllUsersDetails = async () => {
+  let response = await axios.get(userUrl);
+  return response.data;
+};
+
 const createNewEntry = async (payload) => {
   let config = {
     headers : {
@@ -60,6 +65,7 @@ export default {
   setToken,
   getToken,
   getOneUserDetails,
+  getAllUsersDetails,
   incrementLike,
   createNewEntry,
   deleteBlog
