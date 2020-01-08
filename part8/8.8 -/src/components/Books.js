@@ -1,11 +1,24 @@
-import React from 'react'
+import React from 'react';
+import { GET_ALL_BOOKS } from './../queries';
+import { useLazyQuery } from '@apollo/client';
 
 const Books = (props) => {
+  const [ getAllBooks, result ] = useLazyQuery(GET_ALL_BOOKS);
+
   if (!props.show) {
     return null
   }
 
-  const books = []
+  if(!result.called) {
+    getAllBooks();
+    return <div>Loading books...</div>;
+  }
+
+  if(result.loading){
+    return <div>Loading books...</div>;
+  }
+  
+  const books = result.data.allBooks;
 
   return (
     <div>
