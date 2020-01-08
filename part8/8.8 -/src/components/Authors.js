@@ -3,7 +3,9 @@ import { GET_ALL_AUTHORS } from './../queries';
 import { useLazyQuery } from '@apollo/client';
 
 const Authors = (props) => {
-  const [ getAllAuthors, result ] = useLazyQuery(GET_ALL_AUTHORS);
+  const [ getAllAuthors, result ] = useLazyQuery(GET_ALL_AUTHORS, {
+    pollInterval: 2000
+  });
   
   if (!props.show) {
     return null;

@@ -19,3 +19,19 @@ query getAllBooks{
   }
 }
 `;
+
+export const ADD_BOOK = gql`
+mutation addABook($title: String!, $author: String!, $published: Int!, $genres: [String!]!){
+  addBook(
+    title:$title,
+    author: $author,
+    published: $published,
+    genres: $genres
+  ){
+    title
+    author
+    published
+    genres
+  }
+}
+`;
