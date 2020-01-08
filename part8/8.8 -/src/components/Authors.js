@@ -1,23 +1,38 @@
-import React from 'react';
-import { GET_ALL_AUTHORS } from './../queries';
-import { useLazyQuery } from '@apollo/client';
+import React, { useState } from 'react';
+import { GET_ALL_AUTHORS, SET_BORN } from './../queries';
+import { useLazyQuery, useMutation } from '@apollo/client';
 
 const Authors = (props) => {
-  const [ getAllAuthors, result ] = useLazyQuery(GET_ALL_AUTHORS, {
+  const [name, setName] = useState('');
+  const [born, setBorn] = useState('');
+  const [ getAllAuthors, resultAllAuthors ] = useLazyQuery(GET_ALL_AUTHORS, {
     pollInterval: 2000
   });
+  const [ setBornOfAuthor, resultBornAuthor ] = useMutation(SET_BORN);
+
+  const setBornHandler = (e) => {
+    e.preventDefault();
+    setBornOfAuthor({
+      variables: {
+        name: e.target.name.value,
+        setBornTo: parseInt(e.target.born.value)
+      }
+    });
+    setName('');
+    setBorn('');
+  };
   
   if (!props.show) {
     return null;
   }
   
-  if(!result.called) {
+  if(!resultAllAuthors.called) {
     getAllAuthors();
     return <div>Loading...</div>;
   };
   
-  if(result.loading) return <div>Still loading...</div>;
-  let authors = result.data.allAuthors;
+  if(resultAllAuthors.loading) return <div>Still loading...</div>;
+  let authors = resultAllAuthors.data.allAuthors;
 
   return (
     <div>
@@ -42,7 +57,16 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
-
+      <br/>
+      <form onSubmit={setBornHandler}>
+        <div>
+          name <input name="name" value={name} onChange={({target}) => setName(target.value)}/>
+        </div>
+        <div>
+        born <input name="born" value={born} onChange={({target}) => setBorn(target.value)}/>
+        </div>
+        <button type="submit">Set Born</button>
+      </form>
     </div>
   )
 }
