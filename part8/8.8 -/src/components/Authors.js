@@ -14,7 +14,7 @@ const Authors = (props) => {
     e.preventDefault();
     setBornOfAuthor({
       variables: {
-        name: e.target.name.value,
+        name: e.target.select.value,
         setBornTo: parseInt(e.target.born.value)
       }
     });
@@ -33,6 +33,9 @@ const Authors = (props) => {
   
   if(resultAllAuthors.loading) return <div>Still loading...</div>;
   let authors = resultAllAuthors.data.allAuthors;
+  let options = authors.map((author, index) => {
+    return <option key={index} value={author.name}>{author.name}</option>
+  });
 
   return (
     <div>
@@ -60,7 +63,9 @@ const Authors = (props) => {
       <br/>
       <form onSubmit={setBornHandler}>
         <div>
-          name <input name="name" value={name} onChange={({target}) => setName(target.value)}/>
+          <select name='select'>
+            {options}
+          </select>
         </div>
         <div>
         born <input name="born" value={born} onChange={({target}) => setBorn(target.value)}/>
