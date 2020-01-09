@@ -1,5 +1,9 @@
 require('dotenv').config();
-const { ApolloServer, gql } = require('apollo-server');
+const {
+  ApolloServer,
+  gql,
+  UserInputError
+} = require('apollo-server');
 const uuid = require('uuid/v1');
 
 const mongoose = require('mongoose');
@@ -124,8 +128,26 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
+      if(args.title.length < 2){
+        throw new UserInputError('Too short book title', {
+          invalidArgs: args.title
+        });
+      }
+
+      let book = await Book.findOne({ title: args.title });
+      if(book){
+        throw new UserInputError('Book already exists (title not unique)', {
+          invalidArgs: args.title
+        });
+      }
+
       let author = await Author.findOne({ name: args.author});
       if(!author) {
+        if(args.author.length < 4){
+          throw new UserInputError('Too short author name', {
+            invalidArgs: args.author
+          });
+        }
         let newAuthor = {
           name: args.author,
           born: null
@@ -133,6 +155,10 @@ const resolvers = {
         newAuthor = new Author(newAuthor);
         author = await newAuthor.save();
       }
+
+      
+      
+
 
       let newBook = {
         title: args.title,
