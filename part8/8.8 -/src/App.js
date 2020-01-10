@@ -10,8 +10,13 @@ const App = () => {
 
   let addBookButton, loginButton, logoutButton;
 
+  const logoutHandler = () => {
+    localStorage.setItem('Book-app-token', null);
+    setToken(null);
+  };
+
   if(token){
-    logoutButton = <button onClick={() => console.log('LOG OUT')}>logout</button>;
+    logoutButton = <button onClick={logoutHandler}>logout</button>;
     addBookButton = <button onClick={() => setPage('add')}>add book</button>;
     loginButton = null;
   }
@@ -45,6 +50,8 @@ const App = () => {
 
       <Login
         show={page === 'login'}
+        setToken={setToken}
+        setPage={setPage}
       />
 
     </div>

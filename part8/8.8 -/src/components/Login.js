@@ -45,8 +45,10 @@ const Login = (props) => {
   let errorMessage = null;
   if(error) errorMessage = <p style={error.style}>{error.message}</p>;
   if(!loginResult.loading && loginResult.data){
-    console.log(loginResult.data);
-    return <div>Logged in...</div>;
+    localStorage.setItem('Book-app-token', loginResult.data.login.value);
+    props.setToken(loginResult.data.login.value);
+    props.setPage('authors');
+    return <></>;
   }
 
   return (
