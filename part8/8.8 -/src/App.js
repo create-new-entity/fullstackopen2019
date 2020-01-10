@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook';
@@ -10,10 +10,22 @@ const App = () => {
 
   let addBookButton, loginButton, logoutButton;
 
+  useEffect(() => {
+    console.log(localStorage.getItem('Book-app-token'));
+    let storedToken = localStorage.getItem('Book-app-token');
+    if(storedToken) setToken(storedToken);
+  }, []);
+
   const logoutHandler = () => {
-    localStorage.setItem('Book-app-token', null);
+    console.log('destroying token');
+    localStorage.removeItem('Book-app-token');
+    console.log(localStorage.getItem('Book-app-token'));
     setToken(null);
+    console.log();
   };
+
+  console.log('token', token);
+  console.log('typeof token', typeof token);
 
   if(token){
     logoutButton = <button onClick={logoutHandler}>logout</button>;

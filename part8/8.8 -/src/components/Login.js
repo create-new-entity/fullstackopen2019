@@ -31,24 +31,21 @@ const Login = (props) => {
 
   const loginHandler = (event) => {
     event.preventDefault();
-    if(!loginResult.called){
-      login({
-        variables: {
-          username: event.target.username.value,
-          password: event.target.password.value
-        }
-      });
-      return <div>Attempting log in...</div>;
-    }
+    login({
+      variables: {
+        username: event.target.username.value,
+        password: event.target.password.value
+      }
+    });
   };
 
   let errorMessage = null;
   if(error) errorMessage = <p style={error.style}>{error.message}</p>;
-  if(!loginResult.loading && loginResult.data){
-    localStorage.setItem('Book-app-token', loginResult.data.login.value);
+  if(loginResult.data){
+    localStorage.setItem('Book-app-token', JSON.stringify(loginResult.data.login.value));
     props.setToken(loginResult.data.login.value);
     props.setPage('authors');
-    return <></>;
+    loginResult.data = null;
   }
 
   return (
