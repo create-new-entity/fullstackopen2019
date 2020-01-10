@@ -11,11 +11,16 @@ query getAllAuthors{
 `;
 
 export const GET_ALL_BOOKS = gql`
-query getAllBooks{
-  allBooks{
+query getAllBooks {
+  allBooks {
     title
-    author
     published
+    author {
+      name
+      born
+    }
+    genres
+    id
   }
 }
 `;

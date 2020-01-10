@@ -74,6 +74,7 @@ const typeDefs = gql`
     published: Int!
     author: Author!
     genres: [String!]!
+    id: ID!
   }
 
   type Author {
