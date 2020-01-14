@@ -1,0 +1,7 @@
+.env variables to set:
+
+TEST_MONGO_URI
+MONGO_URI
+PORT
+SECRET
+NODE_ENV
