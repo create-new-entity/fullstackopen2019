@@ -59,6 +59,19 @@ const deleteBlog = async (id) => {
   return response.status;
 };
 
+const addNewComment = async (blogId, newComment) => {
+  let payload = {
+    comment: newComment
+  };
+  let config = {
+    headers : {
+      Authorization: token
+    }
+  };
+  let response = await axios.put(baseUrl + `/${blogId}/comments`, payload, config);
+  return response.data;
+};
+
 export default {
   getAll,
   login,
@@ -68,5 +81,6 @@ export default {
   getAllUsersDetails,
   incrementLike,
   createNewEntry,
+  addNewComment,
   deleteBlog
 };

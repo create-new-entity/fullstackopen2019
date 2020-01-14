@@ -3,8 +3,11 @@ import {
   BrowserRouter as Router,
   Route
 } from 'react-router-dom';
-import backEndFns from './services/blogs';
+import { connect } from 'react-redux';
 import _ from 'lodash';
+
+
+import Blog from './components/Blog';
 import Blogs from './components/Blogs';
 import CreateNewBlog from './components/CreateNewBlog';
 import Notification from './components/Notification';
@@ -13,32 +16,34 @@ import LoginForm from './components/LoginForm';
 import Users from './components/Users';
 import User from './components/User';
 import Navigation from './components/Navigation';
+import backEndFns from './services/blogs';
+
 import {
   userInititializeAction,
-  userLoginAction,
-  userLogoutAction
+  userLoginAction
 } from './reducers/userReducer';
 
 import {
   blogsInitializeAction,
   blogsLoginAction,
-  blogsLogoutAction,
   blogsLikeAction,
   blogsDeleteAction,
   blogsCreateAction
 } from './reducers/blogsReducer';
 
 import {
-  reloadUsersAction,
-  clearUsersAction
+  newCommentAction,
+  initializeCommentsAction
+} from './reducers/blogReducer';
+
+import {
+  reloadUsersAction
 } from './reducers/usersReducer';
 
 import {
   showNotificationAction
 } from './reducers/notificationReducer';
 
-import { connect } from 'react-redux';
-import Blog from './components/Blog';
 
 
 const mapStateToProps = (state) => {
@@ -54,17 +59,17 @@ const mapDispatchToProps = {
 
   userInititializeAction,
   userLoginAction,
-  userLogoutAction,
 
   blogsInitializeAction,
   blogsLoginAction,
-  blogsLogoutAction,
   blogsLikeAction,
   blogsDeleteAction,
   blogsCreateAction,
 
+  newCommentAction,
+  initializeCommentsAction,
+
   reloadUsersAction,
-  clearUsersAction,
 
   showNotificationAction
 };
@@ -116,11 +121,6 @@ const App = (props) => {
     );
   };
 
-  const logoutHandler = () => {
-    props.userLogoutAction();
-    props.clearUsersAction();
-    props.blogsLogoutAction();
-  };
 
   let createBlogRef = React.createRef();
 
@@ -180,7 +180,6 @@ const App = (props) => {
           <Router>
             <div style={ { paddingBottom: 50 } }>
               <Navigation/>
-              <button onClick={logoutHandler}>Logout</button>
             </div>
             <Route exact path='/' render={() => {
               return (
@@ -200,6 +199,7 @@ const App = (props) => {
               let blog = props.blogs.find(blog => {
                 return blog.id === match.params.id;
               });
+              props.initializeCommentsAction(blog.comments);
               return (
                 <Blog blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={props.user.id === blog.user.id}/>
               );
