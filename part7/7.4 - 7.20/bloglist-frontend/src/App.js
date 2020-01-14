@@ -5,7 +5,7 @@ import {
   Link
 } from 'react-router-dom';
 import backEndFns from './services/blogs';
-import Blog from './components/Blog';
+import Blogs from './components/Blogs';
 import CreateNewBlog from './components/CreateNewBlog';
 import Notification from './components/Notification';
 import Toggle from './components/Toggle';
@@ -37,6 +37,7 @@ import {
 } from './reducers/notificationReducer';
 
 import { connect } from 'react-redux';
+import Blog from './components/Blog';
 
 
 const mapStateToProps = (state) => {
@@ -98,7 +99,6 @@ const App = (props) => {
         showNotification({ message: 'Logged in successfully', type: 'positive' });
       }
       catch (error){
-        console.log(error);
         showNotification({ message: 'Log in failed', type: 'negative' });
       }
     };
@@ -166,9 +166,7 @@ const App = (props) => {
   const detailsPage = () => {
     let allBlogs = null;
     if(props.blogs.length){
-      allBlogs = props.blogs.map((blog, index) => {
-        return <Blog key={index} blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={props.user.id === blog.user.id}/>;
-      });
+      allBlogs = <Blogs blogs={props.blogs}/>;
     }
 
     let notificationComponent = null;
@@ -203,6 +201,14 @@ const App = (props) => {
               props.reloadUsersAction();
               return (
                 <Users/>
+              );
+            }}/>
+            <Route path='/blogs/:id' render={({ match }) => {
+              let blog = props.blogs.find(blog => {
+                return blog.id === match.params.id;
+              });
+              return (
+                <Blog blog={blog}/>
               );
             }}/>
           </Router>

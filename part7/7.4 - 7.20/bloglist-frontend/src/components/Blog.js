@@ -1,33 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const Blog = ({ blog, likeHandler, deleteHandler, renderDelete }) => {
-  let showOrHide = {
-    display: 'none'
-  };
-  const [visible, setVisible] = useState(false);
-  const toggle = () => {
-    setVisible(!visible);
-  };
-
-  let author = null;
-  if(blog.user){
-    author = <p>Added by {blog.user.name}</p>;
-  }
-
-  let deleteButton = null;
-  if(renderDelete){
-    deleteButton = <button onClick={deleteHandler}>Delete</button>;
-  }
-  visible ? showOrHide = { display: '' } : showOrHide = { display: 'none' };
+const Blog = ({ blog }) => {
   return (
-    <div className="blog">
-      <div className='title-author' onClick={toggle}>{blog.title} {blog.author}</div>
-      <div className='url-like'style={showOrHide}>
-        <a href={blog.url}>{blog.url}</a>
-        <p>{blog.likes} like(s)</p><button onClick={likeHandler}>Like</button>
-        {author}
-        {deleteButton}
-      </div>
+    <div>
+      <p>{blog.title}</p>
+      <p>{blog.author}</p>
+      <a href={blog.url}>URL</a>
+      <p>{blog.likes} Like(s)</p>
+      <p>Added by {blog.user.name}</p>
     </div>
   );
 };

@@ -4,7 +4,6 @@ import {
   TableContainer,
   Table,
   TableHead,
-  TableBody,
   TableRow,
   TableCell
 } from '@material-ui/core';
