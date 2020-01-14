@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
-  Route,
-  Link,
-  withRouter
+  Route
 } from 'react-router-dom';
 import backEndFns from './services/blogs';
+import _ from 'lodash';
 import Blogs from './components/Blogs';
 import CreateNewBlog from './components/CreateNewBlog';
 import Notification from './components/Notification';
@@ -13,7 +12,7 @@ import Toggle from './components/Toggle';
 import LoginForm from './components/LoginForm';
 import Users from './components/Users';
 import User from './components/User';
-import _ from 'lodash';
+import Navigation from './components/Navigation';
 import {
   userInititializeAction,
   userLoginAction,
@@ -179,17 +178,10 @@ const App = (props) => {
       <>
         <div>
           <Router>
-            <div>
-              <Link to='/users'>Users</Link>
+            <div style={ { paddingBottom: 50 } }>
+              <Navigation/>
+              <button onClick={logoutHandler}>Logout</button>
             </div>
-            <Route path='/' render={() => {
-              return (
-                <div>
-                  <h1>Logged in user: {props.user.username}</h1>
-                  <button onClick={logoutHandler}>Logout</button>
-                </div>
-              );
-            }}/>
             <Route exact path='/' render={() => {
               return (
                 <div>
