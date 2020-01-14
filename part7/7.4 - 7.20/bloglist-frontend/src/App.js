@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Link
+  Link,
+  withRouter
 } from 'react-router-dom';
 import backEndFns from './services/blogs';
 import Blogs from './components/Blogs';
@@ -11,6 +12,7 @@ import Notification from './components/Notification';
 import Toggle from './components/Toggle';
 import LoginForm from './components/LoginForm';
 import Users from './components/Users';
+import User from './components/User';
 import _ from 'lodash';
 import {
   userInititializeAction,
@@ -197,8 +199,7 @@ const App = (props) => {
                 </div>
               );
             }}/>
-            <Route path='/users' render={() => {
-              props.reloadUsersAction();
+            <Route exact path='/users' render={() => {
               return (
                 <Users/>
               );
@@ -208,7 +209,14 @@ const App = (props) => {
                 return blog.id === match.params.id;
               });
               return (
-                <Blog blog={blog}/>
+                <Blog blog={blog} likeHandler={likeHandler(blog.id)} deleteHandler={deleteHandler(blog.id)} renderDelete={props.user.id === blog.user.id}/>
+              );
+            }}/>
+            <Route path='/users/:id' render={({ match }) => {
+              let user = props.users.find(user => user.id === match.params.id);
+              let addedBlogs = props.blogs.filter(blog => blog.user.id === user.id);
+              return (
+                <User user={user} addedBlogs={addedBlogs}/>
               );
             }}/>
           </Router>

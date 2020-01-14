@@ -26,13 +26,13 @@ export const clearUsersAction = () => {
   };
 };
 
-const usersReducer = (state = {}, action) => {
+const usersReducer = (state = [], action) => {
   switch (action.type) {
 
   case 'RELOAD':
     return action.data;
   case 'CLEAR':
-    return {};
+    return [];
   default:
     return state;
 
