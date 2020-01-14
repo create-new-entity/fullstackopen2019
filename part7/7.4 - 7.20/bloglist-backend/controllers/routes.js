@@ -42,7 +42,8 @@ router.post('/', async (request, response, next) => {
             author: request.body.author,
             url: request.body.url,
             likes: request.body.likes,
-            user: user.id
+            user: user.id,
+            comments: []
         }).save();
         
         user.blogs = user.blogs.concat(newBlog.toJSON().id);
@@ -58,6 +59,14 @@ router.post('/', async (request, response, next) => {
 
 router.put('/:id', async (request, response) => {
     let updatedObj = await Blog.findOneAndUpdate({ _id: request.params.id }, { $inc: { likes: 1 } }, { new: true });
+    if(updatedObj){
+        response.status(200).json(updatedObj);
+    }
+    else response.status(400).end();
+});
+
+router.put('/:id/comments', async (request, response) => {
+    let updatedObj = await Blog.findByIdAndUpdate(request.params.id, { $push: { comments: request.body.comment } }, { new: true });
     if(updatedObj){
         response.status(200).json(updatedObj);
     }
